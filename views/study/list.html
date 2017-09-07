@@ -1,0 +1,13 @@
+<div class="title title-icon-list">
+    Danh sách nghiên cứu
+</div>
+<filter-box></filter-box>
+<app-table display-columns="['Mã đề tài', 'Tên đề tài', 'Nội dung nghiên cứu', 'Nhân viên nghiên cứu', 'Thời gian nghiên cứu', 'Tài liệu liên quan','Hội thảo liên quan','Người hướng dẫn']" rows="rows" max-size="15"></app-table>
+<h3 style="font-weight: bold">Gần đây</h3>
+<div class="text-right">
+    <span style="margin-right: 20px">Số ngày hiển thị</span>
+    <md-select ng-model="recentDays" style="width: 5%; display: inline-block">
+        <md-option ng-value="opt" ng-repeat="opt in [10,20,30,40]">{{ opt }}</md-option>
+    </md-select>
+</div>
+<app-table display-columns="['Nhân viên tư vấn', 'Khách hàng', 'Người được tư vấn', 'Nội dung tư vấn', 'Tài liệu liên quan', 'Thời gian']" rows="rows" is-read-only="true" max-size="10"></app-table>
