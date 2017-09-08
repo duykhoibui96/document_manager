@@ -280,7 +280,7 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
 
 });
 
-app.run(function($rootScope, $timeout, $mdDialog, $localStorage, $transitions, $timeout, $state) {
+app.run(function($rootScope, $timeout, $mdDialog, $localStorage, $transitions, $timeout, $state,$window) {
 
     $rootScope.isLoading = false;
     $transitions.onStart({}, function(trans) {
@@ -326,8 +326,8 @@ app.run(function($rootScope, $timeout, $mdDialog, $localStorage, $transitions, $
     $transitions.onSuccess({}, function(trans) {
 
         console.log('On success');
+        $window.scrollTo(0,0);
         $rootScope.stopLoading();
-        document.body.scrollTop = 0;
         return true;
 
     })
@@ -335,7 +335,6 @@ app.run(function($rootScope, $timeout, $mdDialog, $localStorage, $transitions, $
     $transitions.onError({}, function(trans) {
 
         console.log('On error');
-        console.log(trans._error);
 
         if (trans._error.type === 5) {
             $state.reload();
@@ -666,11 +665,11 @@ app.directive('jtable', function($localStorage, $http, $rootScope) {
 
 
                         } : undefined,
-                        updateAction: scope.updateActionUrl ? function(postData) {
+                        updateAction: scope.updateActionUrl ? function(postData,params) {
 
                             return $.Deferred(function($dfd) {
                                 $.ajax({
-                                    url: scope.updateActionUrl + '?EmplID=' + postData.EmplID,
+                                    url: scope.updateActionUrl,
                                     type: 'PUT',
                                     dataType: 'json',
                                     data: postData,
@@ -689,12 +688,14 @@ app.directive('jtable', function($localStorage, $http, $rootScope) {
 
 
                         } : undefined,
-                        deleteAction: scope.deleteActionUrl ? function(postData) {
+                        deleteAction: scope.deleteActionUrl ? function(postData,params) {
 
                             return $.Deferred(function($dfd) {
                                 $.ajax({
-                                    url: scope.deleteActionUrl + '?EmplID=' + postData.EmplID,
+                                    url: scope.deleteActionUrl,
                                     type: 'DELETE',
+                                    dataType: 'json',
+                                    data: postData,
                                     beforeSend: function(request) {
                                         request.setRequestHeader('token', $localStorage.auth.token);
                                     },
@@ -714,13 +715,6 @@ app.directive('jtable', function($localStorage, $http, $rootScope) {
                     },
 
                     fields: scope.fields
-                });
-
-                console.log(`${selector} .jtable td`);
-                $(`${selector} .jtable td`).click(function() {
-
-                    alert('Hello');
-
                 });
 
 

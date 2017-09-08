@@ -1,5 +1,14 @@
 var employee = require('../models/Employee');
 
+var getRidOfKey = function(object) {
+
+    delete object.EmplID;
+    return object;
+
+}
+
+
+
 var loadInfo = function(id, res) {
 
     employee.findOne({ EmplID: id }, function(err, doc) {
@@ -108,7 +117,7 @@ module.exports = {
 
     updateEmployee: function(req, res) {
 
-        employee.update(req.query.EmplID, req.body, function(err, doc) {
+        employee.update(req.body.EmplID, getRidOfKey(req.body), function(err, doc) {
 
             if (err) {
                 console.log(err);
@@ -137,9 +146,8 @@ module.exports = {
     },
 
     deleteEmployee: function(req, res) {
-
-
-        employee.remove({ EmplID: req.query.EmplID == 'null' ? '' : req.query.EmplID  }, function(err) {
+        
+        employee.remove(req.body, function(err) {
 
             if (err)
                 console.log(err);
