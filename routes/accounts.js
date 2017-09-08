@@ -4,6 +4,6 @@ var checkAuth = require('../models/checkAuth');
 var router = express.Router();
 
 router.post('/authenticate',api.authenticate);
-router.put('/info',checkAuth,api.updateInfo);
+router.put('/info',checkAuth.forAngular,api.updateInfo);
 
 module.exports = router;

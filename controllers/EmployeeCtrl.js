@@ -55,8 +55,6 @@ module.exports = {
 
         employee.find(function(err, docs) {
 
-            var currentPage = req.query.currentPage;
-            var maxSize = req.query.maxSize;
             if (err) {
                 console.log(err);
                 res.json({ Result: 'ERROR', Message: err });
@@ -66,10 +64,93 @@ module.exports = {
 
                     Result: 'OK',
                     TotalRecordCount: docs.length,
-                    Records: docs.slice(currentPage).slice(0,maxSize)
+                    Records: docs.slice(req.query.jtStartIndex).slice(0, req.query.jtPageSize)
 
                 })
             }
+
+
+        })
+
+
+    },
+
+    addEmployee: function(req, res) {
+
+        var newEmployee = new employee(req.body)
+
+        newEmployee.save(function(err, doc) {
+
+            if (err) {
+                console.log(err);
+                res.json({
+
+                    Result: 'ERROR',
+                    Message: 'Database Error'
+
+                })
+            } else {
+                res.json({
+
+                    Result: 'OK',
+                    Record: doc
+
+
+                })
+
+            }
+
+
+        })
+
+
+    },
+
+    updateEmployee: function(req, res) {
+
+        employee.update(req.query.EmplID, req.body, function(err, doc) {
+
+            if (err) {
+                console.log(err);
+                res.json({
+
+                    Result: 'ERROR',
+                    Message: 'Database Error'
+
+                })
+            } else {
+                res.json({
+
+                    Result: 'OK',
+                    Record: doc
+
+
+                })
+
+            }
+
+
+
+        })
+
+
+    },
+
+    deleteEmployee: function(req, res) {
+
+
+        employee.remove({ EmplID: req.query.EmplID == 'null' ? '' : req.query.EmplID  }, function(err) {
+
+            if (err)
+                console.log(err);
+
+            res.json({
+
+                Result: err ? 'ERROR' : 'OK',
+                Message: 'Database Error'
+
+
+            })
 
 
         })

@@ -312,11 +312,11 @@
     z-index: 1000;
 }
 
-jtable table td,
-jtable table th,
+.jtable  td,
+.jtable  th,
 jtable .jtable-title-text{
 
-    padding: 10px;
+    padding: 10px !important;
     line-height: 30px;
 
 }
@@ -346,6 +346,7 @@ jtable select {
 
     width: 100%;
     border: none;
+    box-shadow: 0px 0px 0px 0px;
     border-bottom: 1px solid black;
     border-radius: 0;
 
@@ -356,13 +357,14 @@ jtable select {
 {
 
     border: none;
+    box-shadow: 0px 0px 0px 0px;
     border-bottom: 1px solid blue;
 
 }
 
 
 
-.button, .ui-dialog button:not(.ui-dialog-titlebar-close) {
+.button, .ui-dialog-buttonset button:not(.ui-dialog-titlebar-close) {
     display: inline-block;
     font-family: inherit;
     -webkit-font-smoothing: antialiased;
@@ -381,16 +383,16 @@ jtable select {
 }
 
 
-.button, .ui-dialog button:not(.ui-dialog-titlebar-close):before {
+.button, .ui-dialog-buttonset button:not(.ui-dialog-titlebar-close):before {
     background: rgba(0, 0, 0, 0.1);
 }
 
-.button, .ui-dialog button:not(.ui-dialog-titlebar-close):hover {
+.button, .ui-dialog-buttonset button:not(.ui-dialog-titlebar-close):hover {
     background: linear-gradient(to bottom, gray, #2c3e50);
 }
 
-.button, .ui-dialog button:not(.ui-dialog-titlebar-close):active,
-.button, .ui-dialog button:not(.ui-dialog-titlebar-close):focus {
+.button, .ui-dialog-buttonset button:not(.ui-dialog-titlebar-close):active,
+.button, .ui-dialog-buttonset button:not(.ui-dialog-titlebar-close):focus {
     outline: none;
     border: none;
 }
@@ -400,9 +402,9 @@ jtable select {
 }
 
 .has-icon::before,
-.ui-dialog button:not(.ui-dialog-titlebar-close)::before,
+.ui-dialog-buttonset button:not(.ui-dialog-titlebar-close)::before,
 .has-icon::after,
-.ui-dialog button:not(.ui-dialog-titlebar-close)::after {
+.ui-dialog-buttonset button:not(.ui-dialog-titlebar-close)::after {
 
     position: absolute;
     top: 0;
@@ -419,19 +421,21 @@ jtable select {
 }
 
 .primary,
-.ui-dialog button#AddRecordDialogSaveButton {
+.ui-dialog-buttonset button:nth-child(2){
     background: #3092c0;
 }
 
 .primary:hover,
-.ui-dialog button#AddRecordDialogSaveButton:hover {
+.ui-dialog-buttonset button:nth-child(2):hover {
     background: linear-gradient(to bottom, #2d89b4, #297ca3);
 }
 
+.ui-dialog-buttonset button#DeleteDialogButton,
 .warn {
     background: #DF8144;
 }
 
+.ui-dialog-buttonset button#DeleteDialogButton:hover,
 .warn:hover {
     background: #E35F09;
 }
@@ -463,7 +467,7 @@ jtable select {
     content: "\f067";
 }
 
-.ui-dialog button#AddRecordDialogSaveButton::after,
+.ui-dialog-buttonset button:nth-child(2)::after,
 .submit::after {
     content: "\f1d8";
 }
@@ -472,6 +476,7 @@ jtable select {
     content: "\f067";
 }
 
+.ui-dialog-buttonset button#DeleteDialogButton::after,
 .delete::after {
     content: "\f014";
 }
@@ -480,7 +485,7 @@ jtable select {
     content: "\f00c";
 }
 
-.ui-dialog .ui-dialog-buttonset button:not(#AddRecordDialogSaveButton)::after,
+.ui-dialog .ui-dialog-buttonset button:first-child::after,
 .back::after {
     content: "\f060";
 }

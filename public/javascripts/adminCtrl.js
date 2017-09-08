@@ -2,19 +2,12 @@ app.controller('adminEmployeeListCtrl', function($scope, $http, $state, $statePa
 
     $scope.fields = {
 
-        _id: {
-
-            list: false,
-            edit: false,
-            create: false
-
-
-        },
         EmplID: {
             key: true,
             title: 'Mã nhân viên',
             width: '10%',
-            edit: false
+            edit: false,
+            create: true
         },
         EmplRcd: {
 

@@ -15,7 +15,12 @@ var EmployeeSchema = new Schema({
     ChildDepartment: String,
     OfficerCode: String,
     JobTitle: String,
-    Mail: String
+    Mail: {
+
+        type: String,
+        unique: true
+
+    }
 
 }, { collection: 'employee' });
 

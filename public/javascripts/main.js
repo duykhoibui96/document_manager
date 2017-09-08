@@ -554,30 +554,97 @@ app.directive('jtable', function($localStorage, $http) {
                 $(selector).jtable({
                     title: scope.title,
                     paging: true, //Enable paging
-                    pageSize: 20, //Set page size (default: 10)
                     actions: {
                         listAction: function(postData, params) {
 
                             return $.Deferred(function($dfd) {
-
-                                $http.get(scope.listActionUrl + `?currentPage=${params.jtStartIndex}&maxSize=${params.jtPageSize}`).then(function(response) {
-
-                                    $dfd.resolve(response.data);
-
-
-                                }, function(err) {
-
-                                    $dfd.reject();
-
+                                $.ajax({
+                                    url: `${scope.listActionUrl}?jtStartIndex=${params.jtStartIndex}&jtPageSize=${params.jtPageSize}`,
+                                    type: 'GET',
+                                    dataType: 'json',
+                                    beforeSend: function(request) {
+                                        request.setRequestHeader('token', $localStorage.auth.token);
+                                    },
+                                    success: function(data) {
+                                        $dfd.resolve(data);
+                                    },
+                                    error: function() {
+                                        $dfd.reject();
+                                    }
                                 });
 
                             });
 
 
                         },
-                        createAction: '/employee/add',
-                        updateAction: 'Controller?action=update',
-                        deleteAction: 'Controller?action=delete'
+                        createAction: scope.createActionUrl ? function(postData) {
+
+                            return $.Deferred(function($dfd) {
+                                $.ajax({
+                                    url: scope.createActionUrl,
+                                    type: 'POST',
+                                    dataType: 'json',
+                                    data: postData,
+                                    beforeSend: function(request) {
+                                        request.setRequestHeader('token', $localStorage.auth.token);
+                                    },
+                                    success: function(data) {
+                                        $dfd.resolve(data);
+                                    },
+                                    error: function() {
+                                        $dfd.reject();
+                                    }
+                                });
+
+                            });
+
+
+                        } : undefined,
+                        updateAction: scope.updateActionUrl ? function(postData) {
+
+                            return $.Deferred(function($dfd) {
+                                $.ajax({
+                                    url: scope.updateActionUrl  + '?EmplID=' + postData.EmplID,
+                                    type: 'PUT',
+                                    dataType: 'json',
+                                    data: postData,
+                                    beforeSend: function(request) {
+                                        request.setRequestHeader('token', $localStorage.auth.token);
+                                    },
+                                    success: function(data) {
+                                        $dfd.resolve(data);
+                                    },
+                                    error: function() {
+                                        $dfd.reject();
+                                    }
+                                });
+
+                            });
+
+
+                        } : undefined,
+                        deleteAction: scope.deleteActionUrl ? function(postData) {
+
+                            return $.Deferred(function($dfd) {
+                                $.ajax({
+                                    url: scope.deleteActionUrl + '?EmplID=' + postData.EmplID,
+                                    type: 'DELETE',
+                                    beforeSend: function(request) {
+                                        request.setRequestHeader('token', $localStorage.auth.token);
+                                    },
+                                    success: function(data) {
+                                        $dfd.resolve(data);
+                                    },
+                                    error: function() {
+                                        $dfd.reject();
+                                    }
+                                });
+
+                            });
+
+
+                        } : undefined
+
                     },
                     fields: scope.fields
                 });
