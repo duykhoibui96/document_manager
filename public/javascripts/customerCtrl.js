@@ -50,9 +50,9 @@ app.controller('customerListCtrl', function($scope,$http){
 
 
         },
-        ResponsibleEmplID: {
+        ResponsibleEmpl: {
 
-            title: 'Nhân viên quản ly',
+            title: 'Nhân viên quản lý',
             width: '10%'
 
 
