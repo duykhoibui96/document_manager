@@ -268,15 +268,11 @@
 
 
 
-
-
-
-
-
-
-
-
 /*Set theme for app*/
+
+hr {
+
+}
 
 .main-theme {
 
@@ -303,7 +299,6 @@
 .icon:hover {
 
     cursor: pointer;
-    color: blue;
 }
 
 .affix {
@@ -318,6 +313,12 @@ jtable .jtable-title-text{
 
     padding: 10px !important;
     line-height: 30px;
+
+}
+
+.jtable tr:hover {
+
+    cursor: pointer;
 
 }
 
@@ -506,8 +507,9 @@ jtable select {
 .title::before {
 
     font-family: FontAwesome;
+    width: 30px;
     margin-right: 8px;
-    color: #fff;
+    color: linear-gradient(to bottom, gray, #2c3e50);
     -webkit-border-radius: 50%;
     -moz-border-radius: 50%;
     -ms-border-radius: 50%;
@@ -515,13 +517,10 @@ jtable select {
     border-radius: 50%;
     -moz-background-clip: padding;
     -webkit-background-clip: padding-box;
-    background-clip: padding-box;
-    background: linear-gradient(to bottom, gray, #2c3e50);
     text-align: center;
     padding: 7px;
-    font-size: 0.5em;
+    font-size: 1em;
     position: relative;
-    top: -5px;
 }
 
 .title-icon-history::before {
@@ -537,6 +536,12 @@ jtable select {
 .title-icon-form::before {
 
     content: "\f298";
+}
+
+.title-icon-details::before {
+    
+    content: "\f129";
+
 }
 
 

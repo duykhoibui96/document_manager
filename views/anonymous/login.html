@@ -20,15 +20,15 @@
                     <input type="checkbox" value="remember-me"> Remember me
                 </label>
             </div> -->
-                <md-input-container>
+                <div class="form-group">
                     <label>Tài khoản</label>
-                    <input type="text" name="username" ng-model="username" class="custom-input" ng-disable="isAuthenticating" required>
-                </md-input-container>
-                <md-input-container>
+                    <input type="text" name="username" ng-model="username" class="form-control custom-input" ng-disable="isAuthenticating" required>
+                </div>
+                <div class="form-group">
                     <label>Mật khẩu</label>
-                    <input type="password" name="password" ng-model="password" class="custom-input" ng-disable="isAuthenticating" required>
-                </md-input-container>
-                <center ng-style="{ 'opacity': isAuthenticating ? '0.5' : '1' }">
+                    <input type="password" name="password" ng-model="password" class="form-control custom-input" ng-disable="isAuthenticating" required>
+                </div>
+                <div class="text-center" style="margin-top: 20px" ng-style="{ 'opacity': isAuthenticating ? '0.5' : '1' }">
                     <button class="button has-icon primary signin" type="submit">
                         <div ng-show="isAuthenticating">
                             Đang xác thực ...
@@ -37,7 +37,7 @@
                             Đăng nhập
                         </div>
                     </button>
-                </center>
+                </div>
             </form>
             <!-- /form -->
             <!--   <a href="#" class="forgot-password">

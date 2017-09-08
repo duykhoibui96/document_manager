@@ -1,10 +1,28 @@
-<div class="row" style="border: 1px solid #eee; padding: 10px; background: #eee">
-    <div class="col-sm-5 col-sm-offset-1 col-xs-12">
-        <span>Bắt đầu</span>
-        <md-datepicker ng-model="beginTime" md-placeholder="Enter date"></md-datepicker>
+<div id="{{filterBoxId}}" style="width: 100%; border: 1px solid #BDBDBD; border-bottom: none">
+    <div style="width: 100%; padding: 10px; background: #3092c0; color: white">
+        <span style="font-size: 120%; padding-left: 30px">Bộ lọc danh sách</span>
     </div>
-    <div class="col-sm-5 col-sm-offset-1 col-xs-12">
-        <span>Kết thúc</span>
-        <md-datepicker ng-model="endTime" md-placeholder="Enter date"></md-datepicker>
-    </div>
+    <form class="row" style="padding: 30px 50px">
+        <div class="col-sm-4 col-xs-12" style="padding-bottom: 10px" ng-style="{ opacity: mode == 'recent' ? 0.5 : 1 }">
+            <label for="">Bắt đầu</label>
+            <input type="text" class="form-control custom-input begin-date" ng-disabled="mode == 'recent'">
+        </div>
+        <div class="col-sm-4 col-xs-12" style="padding-bottom: 10px" ng-style="{ opacity: mode == 'recent' ? 0.5 : 1 }">
+            <label for="">Kết thúc</label>
+            <input type="text" class="form-control custom-input end-date" ng-disabled="mode == 'recent'">
+        </div>
+        <div class="col-sm-4 col-xs-12" style="padding-bottom: 10px">
+            <label for="">Khoảng thời gian</label>
+            <select class="form-control" ng-model="recentDays">
+                <option value="10">10 ngày gần đây</option>
+                <option value="15">15 ngày gần đây</option>
+                <option value="20">20 ngày gần đây</option>
+                <option value="30">30 ngày gần đây</option>
+                <option value="0">Tùy chỉnh</option>
+            </select>
+        </div>  
+    </form>
+    <div class="text-center">
+    	<button type="button" class="button has-icon primary submit">tiến hành lọc</button>
+    </div> 
 </div>

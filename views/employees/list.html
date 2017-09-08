@@ -1,12 +1,13 @@
 <div class="title title-icon-list">
-    Danh sách hoạt động
+    lượt sử hoạt động
 </div>
 <div class="text-center" style="margin-bottom: 50px">
     <span style="margin-right: 20px">Loại danh sách</span>
-    <md-select ng-model="listType" style="width: 20%; display: inline-block">
-        <md-option ng-value="opt.value" ng-repeat="opt in types">{{ opt.display }}</md-option>
-    </md-select>
+    <select ng-model="listType" class="form-control" style="width: 20%; display: inline-block">
+        <option ng-value="opt.value" ng-repeat="opt in types">{{ opt.display }}</option>
+    </select>
 </div>
+<filter-box filter-box-id="activity-filter"></filter-box>
 <div ng-switch on="listType">
     <div ng-switch-when="consulting">
         <jtable jtable-id="consulting-jtable" title="Danh sách tư vấn" list-action-url="/employee/all" fields="fields[0]"></jtable>

@@ -1,0 +1,82 @@
+<div class="title title-icon-details">
+    chi tiết nhân viên
+    <div class="pull-right" style="padding: 5px 13px; position: relative; top: -5px; border-radius: 50%; background: linear-gradient(to bottom, gray, #2c3e50)">
+    	<a ui-sref="admin.employee-list"><span class="fa fa-arrow-left" style="color: white"></span></a>
+    </div>
+</div>
+<hr>
+<h3 style="padding-left: 30px; font-weight: bold; color: blue">Thông tin cá nhân</h3>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-3 col-xs-12">
+            <img src="/assets/images/user.png" alt="" class="img-circle img-responsive" style="width: 100%; padding: 20px">
+        </div>
+        <div class="col-sm-4 col-sm-offset-1 col-xs-12">
+            <form class="form-horizontal" style="padding-top: 20px">
+                <div class="form-group">
+                    <label class="control-label col-sm-5">Mã nhân viên:</label>
+                    <div class="col-sm-7">
+                        <p class="form-control-static">{{mainInfo.EmplID}}</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-5">Tên nhân viên:</label>
+                    <div class="col-sm-7">
+                        <p class="form-control-static">{{mainInfo.Name}}</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-5">Employee Record:</label>
+                    <div class="col-sm-7">
+                        <p class="form-control-static">{{mainInfo.EmplRcd}}</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-5">Email:</label>
+                    <div class="col-sm-7">
+                        <p class="form-control-static">{{mainInfo.Mail}}</p>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-sm-4 col-xs-12">
+            <form class="form-horizontal" style="padding-top: 20px">
+                <div class="form-group">
+                    <label class="control-label col-sm-5">Phòng ban:</label>
+                    <div class="col-sm-7">
+                        <p class="form-control-static">{{mainInfo.ChildDepartment}}</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-5">Chức vụ:</label>
+                    <div class="col-sm-7">
+                        <p class="form-control-static">{{mainInfo.OfficerCode}}</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-5">Công việc:</label>
+                    <div class="col-sm-7">
+                        <p class="form-control-static">{{mainInfo.JobTitle}}</p>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<hr>
+<h3 style="padding-left: 30px; font-weight: bold; color: blue">Lược sử hoạt động</h3>
+<div class="text-center" style="margin-bottom: 50px">
+    <span style="margin-right: 20px">Loại danh sách</span>
+    <select ng-model="listType" class="form-control" style="width: 20%; display: inline-block">
+        <option ng-value="opt.value" ng-repeat="opt in types">{{ opt.display }}</option>
+    </select>
+</div>
+<filter-box filter-box-id="activity-filter"></filter-box>
+<div ng-switch on="listType">
+    <div ng-switch-when="consulting">
+        <jtable jtable-id="consulting-jtable" title="Danh sách tư vấn" list-action-url="/employee/all" fields="fields[0]"></jtable>
+    </div>
+    <div ng-switch-when="consulted">
+        <jtable jtable-id="consulted-jtable" title="Danh sách được tư vấn" list-action-url="/employee/all" fields="fields[1]"></jtable>
+    </div>
+</div>

@@ -221,12 +221,43 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
         })
         .state('admin.employee-list', {
 
-            url: '/employe-list',
+            url: '/employee-list',
             templateUrl: 'admin/employee_list.html',
             controller: 'adminEmployeeListCtrl',
             onEnter: function($rootScope) {
 
                 $rootScope.sidebarOptions[0].isActive = true;
+
+            }
+
+
+        })
+        .state('admin.employee-details', {
+
+            url: '/employee-details?id',
+            templateUrl: 'admin/employee_details.html',
+            controller: 'adminEmployeeDetailsCtrl',
+            onEnter: function($rootScope) {
+
+                angular.forEach($rootScope.sidebarOptions, function(item) {
+
+                    item.isActive = false;
+
+                })
+
+            },
+            resolve: {
+
+                information: function($stateParams, $http) {
+
+                    return $http.get('/employee/info?id=' + $stateParams.id).then(function(response) {
+
+                        return response.data;
+
+                    })
+
+                }
+
 
             }
 
@@ -474,8 +505,32 @@ app.directive('filterBox', function() {
     return {
 
         restrict: 'EA',
-        scope: true,
-        templateUrl: 'components/filter-box.component.html'
+        scope: {
+
+            filterBoxId: '@'
+        },
+        templateUrl: 'components/filter-box.component.html',
+        link: function(scope, element) {
+
+            scope.mode = 'optional';
+            scope.recentDays = '0';
+
+            $(function() {
+                $('.begin-date, .end-date').datepicker();
+
+                scope.$watch('recentDays', function(newValue, oldValue) {
+
+                    console.log(newValue === '0');
+                    if (newValue === '0')
+                        scope.mode = 'optional';
+                    else
+                        scope.mode = 'recent';
+
+                });
+
+            });
+
+        }
 
 
 
@@ -527,7 +582,7 @@ app.directive('appTable', function() {
 
 })
 
-app.directive('jtable', function($localStorage, $http) {
+app.directive('jtable', function($localStorage, $http, $rootScope) {
 
 
     return {
@@ -535,6 +590,7 @@ app.directive('jtable', function($localStorage, $http) {
         restrict: 'EA',
         scope: {
 
+            recordClick: '&',
             jtableId: '@',
             listActionUrl: '@',
             createActionUrl: '@',
@@ -542,7 +598,8 @@ app.directive('jtable', function($localStorage, $http) {
             deleteActionUrl: '@',
             fields: '=',
             title: '@',
-            instantLoad: '='
+            instantLoad: '=',
+
 
         },
         template: `<div id="{{jtableId}}"></div>`,
@@ -554,6 +611,14 @@ app.directive('jtable', function($localStorage, $http) {
                 $(selector).jtable({
                     title: scope.title,
                     paging: true, //Enable paging
+                    recordsLoaded: function(event, data) {
+                        $('.jtable-data-row').click(function() {
+                            var row_id = $(this).attr('data-record-key');
+                            console.log(this);
+                            scope.recordClick({ EmplID: row_id });
+                        });
+                    },
+                    jqueryuiTheme: true,
                     actions: {
                         listAction: function(postData, params) {
 
@@ -589,6 +654,7 @@ app.directive('jtable', function($localStorage, $http) {
                                         request.setRequestHeader('token', $localStorage.auth.token);
                                     },
                                     success: function(data) {
+
                                         $dfd.resolve(data);
                                     },
                                     error: function() {
@@ -604,7 +670,7 @@ app.directive('jtable', function($localStorage, $http) {
 
                             return $.Deferred(function($dfd) {
                                 $.ajax({
-                                    url: scope.updateActionUrl  + '?EmplID=' + postData.EmplID,
+                                    url: scope.updateActionUrl + '?EmplID=' + postData.EmplID,
                                     type: 'PUT',
                                     dataType: 'json',
                                     data: postData,
@@ -646,11 +712,21 @@ app.directive('jtable', function($localStorage, $http) {
                         } : undefined
 
                     },
+
                     fields: scope.fields
                 });
 
+                console.log(`${selector} .jtable td`);
+                $(`${selector} .jtable td`).click(function() {
+
+                    alert('Hello');
+
+                });
+
+
                 if (scope.instantLoad)
                     $(selector).jtable('load');
+
             });
 
 
