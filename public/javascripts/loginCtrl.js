@@ -36,7 +36,7 @@ app.controller('loginCtrl', function($scope, $http, $state, $rootScope, $localSt
                         token: res.token
 
                     };
-                    $state.transitionTo('employee', { reload: true });
+                    $state.transitionTo('dashboard');
 
             }
 

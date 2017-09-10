@@ -26,7 +26,7 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
     }]);
 
     $urlRouterProvider
-        .otherwise('/login');
+        .otherwise('/dashboard');
 
 
     $stateProvider
@@ -44,6 +44,19 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
 
                 }
 
+
+            }
+
+
+        })
+        .state('dashboard',{
+
+            url: '/dashboard',
+            templateUrl: 'dashboard.html',
+            onEnter: function($rootScope) {
+
+                $rootScope.option = 'dashboard';
+                $rootScope.changeSidebarOptions([]);
 
             }
 

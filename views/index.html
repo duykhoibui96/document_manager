@@ -47,7 +47,7 @@
                     <img src="/assets/images/logo.png" alt="">
                 </div>
                 <div class="col-sm-2 col-sm-offset-4 col-xs-12" style="padding-top: 10px" ng-if="isAuthenticated()">
-                    <a ui-sref="user"><img src="/assets/images/user.png" alt="" style="width: 40px; border-radius: 25px"></a>
+                    <a ui-sref="employee"><img src="/assets/images/user.png" alt="" style="width: 40px; border-radius: 25px"></a>
                     <button class="btn btn-default dropdown-toggle icon" style="border: none; background: none; font-weight: bold" type="button" id="menu1" data-toggle="dropdown">{{getUsername()}}</button>
                     <ul class="dropdown-menu list-group account-menu" role="menu" aria-labelledby="menu1">
                         <li class="list-group-item main-select" role="presentation"><a role="menuitem" tabindex="-1" ui-sref="employee" ui-sref-opts="{reload:true}">Thông tin cá nhân</a></li>
@@ -62,7 +62,7 @@
                             <i class="fa fa-bars" aria-hidden="true"></i>
                         </button>
                         <a class="navbar-brand" href="javascript:;" ng-click="toggleSidebar()" ng-show="sidebarOptions.length > 0"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></a>
-                        <a class="navbar-brand space-between-brand"><i class="fa fa-home icon" aria-hidden="true" ui-sref="employee" style="color: white !important"></i></a>
+                        <a class="navbar-brand space-between-brand" ui-sref="dashboard"><i class="fa fa-home icon" aria-hidden="true" style="color: white !important"></i></a>
                     </div>
                     <div class="collapse navbar-collapse" ng-if="isAuthenticated()">
                         <ul class="nav navbar-nav">
