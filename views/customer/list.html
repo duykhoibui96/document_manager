@@ -9,12 +9,12 @@
 </div>
 <div ng-switch on="listType">
     <div ng-switch-when="not-consulted">
-        <jtable jtable-id="not-consulted-jtable" title="Danh sách chưa tư vấn" list-action-url="/employee/all" fields="fields"></jtable>
+        <jtable jtable-id="not-consulted-jtable" title="Danh sách chưa tư vấn" list-action-url="/customer/all?filter=notconsulted" fields="fields"></jtable>
     </div>
     <div ng-switch-when="consulted">
-        <jtable jtable-id="consulted-jtable" title="Danh sách đã tư vấn" list-action-url="/employee/all" fields="fields"></jtable>
+        <jtable jtable-id="consulted-jtable" title="Danh sách đã tư vấn" list-action-url="/customer/all?filter=consulted" fields="fields"></jtable>
     </div>
     <div ng-switch-default>
-    	<jtable jtable-id="all-jtable" title="Tất cả" list-action-url="/customer/all" fields="fields"></jtable>
+    	<jtable jtable-id="all-jtable" title="Tất cả" list-action-url="/customer/all?filter=all" create-action-url="/customer/add" fields="fields"></jtable>
     </div>
 </div>

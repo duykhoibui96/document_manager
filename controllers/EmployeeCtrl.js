@@ -1,6 +1,6 @@
 var employee = require('../models/Employee');
 
-var getRidOfKey = function(object) {
+var getRidOfKey = function (object) {
 
     delete object.EmplID;
     return object;
@@ -9,9 +9,9 @@ var getRidOfKey = function(object) {
 
 
 
-var loadInfo = function(id, res) {
+var loadInfo = function (id, res) {
 
-    employee.findOne({ EmplID: id }, function(err, doc) {
+    employee.findOne({ EmplID: id }, function (err, doc) {
 
         if (err) {
             console.log(err);
@@ -36,7 +36,7 @@ var loadInfo = function(id, res) {
 
 module.exports = {
 
-    getInfo: function(req, res) {
+    getInfo: function (req, res) {
 
         var id = req.query.id ? req.query.id : req.id;
 
@@ -44,9 +44,9 @@ module.exports = {
 
     },
 
-    changeInfo: function(req, res) {
+    changeInfo: function (req, res) {
 
-        employee.update({ EmplID: req.id }, { $set: req.body }, function(err, docs) {
+        employee.update({ EmplID: req.id }, { $set: req.body }, function (err, docs) {
 
             if (err) {
                 console.log(err);
@@ -60,9 +60,33 @@ module.exports = {
 
     },
 
-    getAllInfo: function(req, res) {
+    getAllId: function (req, res) {
 
-        employee.find(function(err, docs) {
+        employee.find().select('EmplID').exec(function (err, docs) {
+
+            if (err) {
+                console.log(err);
+                res.json({ Result: 'ERROR', Message: err });
+            } else {
+
+                res.json({
+
+                    Result: 'OK',
+                    TotalRecordCount: docs.length,
+                    Records: docs
+
+                })
+            }
+
+
+        })
+
+    },
+
+
+    getAllInfo: function (req, res) {
+
+        employee.find(function (err, docs) {
 
             if (err) {
                 console.log(err);
@@ -84,11 +108,11 @@ module.exports = {
 
     },
 
-    addEmployee: function(req, res) {
+    addEmployee: function (req, res) {
 
         var newEmployee = new employee(req.body)
 
-        newEmployee.save(function(err, doc) {
+        newEmployee.save(function (err, doc) {
 
             if (err) {
                 console.log(err);
@@ -115,9 +139,9 @@ module.exports = {
 
     },
 
-    updateEmployee: function(req, res) {
+    updateEmployee: function (req, res) {
 
-        employee.update(req.body.EmplID, getRidOfKey(req.body), function(err, doc) {
+        employee.update(req.body.EmplID, getRidOfKey(req.body), function (err, doc) {
 
             if (err) {
                 console.log(err);
@@ -145,9 +169,9 @@ module.exports = {
 
     },
 
-    deleteEmployee: function(req, res) {
-        
-        employee.remove(req.body, function(err) {
+    deleteEmployee: function (req, res) {
+
+        employee.remove(req.body, function (err) {
 
             if (err)
                 console.log(err);

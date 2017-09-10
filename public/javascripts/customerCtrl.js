@@ -1,12 +1,12 @@
-app.controller('customerListCtrl', function($scope,$http){
+app.controller('customerListCtrl', function ($scope, $http) {
 
     $scope.listType = 'all';
 
     $scope.types = [
 
-    	{ display: 'Tất cả', value: 'all'},
-    	{ display: 'Khách hàng chưa tư vấn', value: 'not-consulted'},
-    	{ display: 'Khách hàng đã tư vấn', value: 'consulted'},
+        { display: 'Tất cả', value: 'all' },
+        { display: 'Khách hàng chưa tư vấn', value: 'not-consulted' },
+        { display: 'Khách hàng đã tư vấn', value: 'consulted' },
 
 
     ]
@@ -53,7 +53,14 @@ app.controller('customerListCtrl', function($scope,$http){
         ResponsibleEmpl: {
 
             title: 'Nhân viên quản lý',
-            width: '10%'
+            width: '10%',
+            options:  [
+
+                   { DisplayText: 'OK', Value: 1 }
+
+
+
+            ]
 
 
         }
@@ -62,10 +69,10 @@ app.controller('customerListCtrl', function($scope,$http){
 
     }
 
-    $scope.$watch('listType', function(newValue, oldValue) {
+    $scope.$watch('listType', function (newValue, oldValue) {
 
         console.log(newValue);
-        angular.forEach($scope.types, function(item) {
+        angular.forEach($scope.types, function (item) {
 
             if (item.value === newValue)
                 $scope.title = item.display;

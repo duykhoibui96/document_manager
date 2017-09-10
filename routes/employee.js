@@ -5,6 +5,7 @@ var router = express.Router();
 
 router.get('/info',checkAuth.forAngular,api.getInfo);
 router.get('/all',checkAuth.forJtable,api.getAllInfo);
+router.post('/all-id',api.getAllId);
 router.post('/add',checkAuth.forJtable,api.addEmployee);
 router.delete('/delete',checkAuth.forJtable,api.deleteEmployee);
 router.put('/update',checkAuth.forJtable,api.updateEmployee);

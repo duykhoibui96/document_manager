@@ -40,7 +40,7 @@ app.controller('adminEmployeeListCtrl', function($scope, $http, $state, $statePa
 
             title: 'Email',
             edit: false,
-            width: '18%',
+            width: '18%'
 
         }
     };
