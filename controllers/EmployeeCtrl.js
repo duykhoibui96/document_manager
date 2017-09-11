@@ -44,6 +44,46 @@ module.exports = {
 
     },
 
+    get_reduced: function(req,res) {
+
+        var id= req.params.id;
+
+        employee.findOne({EmplID: id}).select('EmplID Name').exec(function(err,doc){
+
+            if (err)
+            {
+                console.log(err);
+                res.json({
+
+                    Result: 'ERROR',
+                    Message: 'Database error'
+
+                });
+            }
+            else
+            {
+                var result = [];
+                result.push({
+
+                    DisplayText: `${doc.EmplID} - ${doc.Name}`,
+                    Value: doc.EmplID
+
+
+                });
+                res.json({
+
+                    Result: 'OK',
+                    Options: result
+
+
+                })
+            }
+
+
+        });
+
+    },
+
     change: function (req, res) {
 
         employee.update({ EmplID: req.id }, { $set: req.body }, function (err, docs) {

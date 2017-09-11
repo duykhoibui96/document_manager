@@ -148,6 +148,7 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
 
             url: '/consulting',
             templateUrl: '/employees/consulting.html',
+            controller: 'employeeConsultingCtrl',
             onEnter: function ($rootScope) {
 
                 var selectedIndex = 2;
@@ -873,7 +874,7 @@ app.directive('jtable', function ($localStorage, $http, $rootScope) {
                     formCreated: function (event, data) {
 
                         data.form.find('select[name=ResponsibleEmpl]').attr('multiple', 'multiple');
-                        data.form.find('input[name=Time]').datepicker();
+                        data.form.find('input[name=Time]').datepicker().datepicker('setDate', 'today');
                     }
                 });
 

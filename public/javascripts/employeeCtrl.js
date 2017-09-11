@@ -1,12 +1,12 @@
-app.controller('employeeInfoCtrl', function($scope, $http, $state, $stateParams, information, $rootScope) {
+app.controller('employeeInfoCtrl', function ($scope, $http, $state, $stateParams, information, $rootScope) {
 
     $scope.mainInfo = information.data;
     $scope.info = Object.assign({}, $scope.mainInfo, { EmplID: undefined, Name: undefined, Email: undefined });
     $scope.mode = 'info';
-    $scope.updateInformation = function() {
+    $scope.updateInformation = function () {
 
         $scope.isLoading = true;
-        $http.put('/employee/info', $scope.info).then(function(response) {
+        $http.put('/employee/info', $scope.info).then(function (response) {
 
             $scope.isLoading = false;
             var res = response.data;
@@ -26,7 +26,7 @@ app.controller('employeeInfoCtrl', function($scope, $http, $state, $stateParams,
 
             }
 
-        }, function(err) {
+        }, function (err) {
 
             $scope.isLoading = false;
             console.log(err.status);
@@ -35,10 +35,10 @@ app.controller('employeeInfoCtrl', function($scope, $http, $state, $stateParams,
 
 
     }
-    $scope.updatePassword = function() {
+    $scope.updatePassword = function () {
 
         $scope.isLoading = true;
-        $http.put('/accounts/info', { Password: $scope.password }).then(function(response) {
+        $http.put('/accounts/info', { Password: $scope.password }).then(function (response) {
 
             $scope.isLoading = false;
             var res = response.data;
@@ -58,7 +58,7 @@ app.controller('employeeInfoCtrl', function($scope, $http, $state, $stateParams,
 
             }
 
-        }, function(err) {
+        }, function (err) {
 
             $scope.isLoading = false;
             console.log(err.status);
@@ -71,7 +71,7 @@ app.controller('employeeInfoCtrl', function($scope, $http, $state, $stateParams,
 });
 
 
-app.controller('employeeCustomerListCtrl', function($scope) {
+app.controller('employeeCustomerListCtrl', function ($scope) {
 
     $scope.fields = {
 
@@ -82,7 +82,7 @@ app.controller('employeeCustomerListCtrl', function($scope) {
             key: true,
             edit: true,
             create: true,
-            input: function(data) {
+            input: function (data) {
                 if (data.record) {
                     return '<input type="text" name="CustomerID" readonly value="' + data.record.CustomerID + '"/>';
                 } else {
@@ -125,7 +125,7 @@ app.controller('employeeCustomerListCtrl', function($scope) {
 
             title: 'Nhân viên quản lý',
             width: '20%',
-            display: function(data) {
+            display: function (data) {
 
                 console.log(data);
                 return `<span>${data.record.ResponsibleEmpl.join()}</span>`;
@@ -138,6 +138,73 @@ app.controller('employeeCustomerListCtrl', function($scope) {
 
 
     }
+
+
+
+})
+
+app.controller('employeeConsultingCtrl', function ($scope,$localStorage) {
+
+    $scope.fields = {
+
+        ConsID: {
+
+            key: true,
+            title: 'Mã tư vấn',
+            width: '10%',
+            list: true,
+            create: true,
+            edit: true,
+            input: function (data) {
+                if (data.record) {
+                    return '<input type="text" name="ConsID" readonly value="' + data.record.ConsID + '"/>';
+                } else {
+                    return `<input type="text" name="ConsID" readonly value="${Date.now()}"/>`;
+                }
+
+            }
+
+
+        },
+        ConsultingEmplID: {
+            title: 'Nhân viên tư vấn',
+            width: '20%',
+            list: false,
+            create: true,
+            edit: false,
+            options: '/employee/get/' + $localStorage.auth.token
+        },
+        CustomerID: {
+            title: 'Khách hàng',
+            width: '20%',
+            options: '/customer/all-id'
+
+        },
+
+        ConsultedEmplID: {
+            title: 'Nhân viên được tư vấn',
+            width: '20%',
+            options: '/employee/all-id'
+        },
+
+        Document: {
+            title: 'Tài liệu liên quan',
+            width: '20%'
+        },
+
+        Time: {
+            title: 'Thời gian',
+            width: '10%',
+            display: function (data) {
+
+                return new Date(data.record.Time).toLocaleDateString();
+
+
+            }
+        }
+
+
+    };
 
 
 
