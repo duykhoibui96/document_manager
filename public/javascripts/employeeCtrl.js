@@ -71,151 +71,74 @@ app.controller('employeeInfoCtrl', function($scope, $http, $state, $stateParams,
 });
 
 
-app.controller('employeeActivityListCtrl', function($scope, $http, $state, $stateParams, $rootScope) {
+app.controller('employeeCustomerListCtrl', function($scope) {
 
-    $scope.listType = 'consulting';
+    $scope.fields = {
 
-    $scope.types = [
+        CustomerID: {
 
-        { display: 'Danh sách tư vấn', value: 'consulting' },
-        { display: 'Danh sách được tư vấn', value: 'consulted' },
-        { display: 'Danh sách nghiên cứu', value: 'study' },
-        { display: 'Danh sách hướng dẫn', value: 'instruct' }
-
-
-    ]
-
-
-    $scope.recentDays = 10;
-
-    /*$scope.fields = {
-
-        _id: {
-
-            list: false,
-            edit: false,
-            create: false
-
-
-        },
-        EmplID: {
-            key: true,
-            title: 'Mã nhân viên',
+            title: 'Mã khách hàng',
             width: '10%',
-            edit: false
-        },
-        EmplRcd: {
+            key: true,
+            edit: true,
+            create: true,
+            input: function(data) {
+                if (data.record) {
+                    return '<input type="text" name="CustomerID" readonly value="' + data.record.CustomerID + '"/>';
+                } else {
+                    return `<input type="text" name="CustomerID" readonly value="${Date.now()}"/>`;
+                }
 
-            title: 'Record',
-            list: false,
-            edit: false
+            }
 
         },
+
         Name: {
-            title: 'Tên nhân viên',
-            width: '18%',
-        },
-        ChildDepartment: {
-            title: 'Phòng ban',
-            width: '18%',
+
+            title: 'Tên khách hàng',
+            width: '20%'
+
 
         },
-        OfficerCode: {
-            title: 'Chức vụ',
-            width: '18%'
+        Address: {
+
+            title: 'Địa chỉ',
+            width: '20%'
+
 
         },
-        JobTitle: {
-            title: 'Công việc',
-            width: '18%'
+        Phone: {
+
+            title: 'Số điện thoại',
+            width: '10%'
+
 
         },
-        Mail: {
+        Representative: {
 
-            title: 'Email',
-            edit: false,
-            width: '18%',
+            title: 'Người đại diện',
+            width: '15%'
+
+
+        },
+        ResponsibleEmpl: {
+
+            title: 'Nhân viên quản lý',
+            width: '20%',
+            display: function(data) {
+
+                console.log(data);
+                return `<span>${data.record.ResponsibleEmpl.join()}</span>`;
+
+            }
+
 
         }
-    };*/
-
-    $scope.fields = [
-
-        {
-
-            CustomerID: {
-                title: 'Khách hàng',
-                width: '25%'
-
-            },
-
-            ConsultedEmplID: {
-                title: 'Nhân viên được tư vấn',
-                width: '25%'
-            },
-
-            Document: {
-                title: 'Tài liệu liên quan',
-                width: '25%'
-            },
-
-            Time: {
-                title: 'Thời gian',
-                width: '25%',
-                edit: false,
-                create: false
-            },
 
 
 
-        },
-
-        {
-
-            ConsultingEmplID: {
-                title: 'Nhân viên tư vấn',
-                width: '25%'
-            },
-
-            CustomerID: {
-                title: 'Khách hàng',
-                width: '25%'
-
-            },
-
-            Document: {
-                title: 'Tài liệu liên quan',
-                width: '25%'
-            },
-
-            Time: {
-                title: 'Thời gian',
-                width: '25%',
-                edit: false,
-                create: false
-            },
+    }
 
 
 
-        },
-
-
-
-
-    ]
-
-    $scope.$watch('listType', function(newValue, oldValue) {
-
-        console.log(newValue);
-        angular.forEach($scope.types, function(item) {
-
-            if (item.value === newValue)
-                $scope.title = item.display;
-
-        })
-
-
-    })
-
-
-});
+})

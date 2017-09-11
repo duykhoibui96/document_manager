@@ -1,11 +1,11 @@
 var app = angular.module('app', ['ngRoute', 'ui.router', 'ngAnimate', 'ngLocationUpdate', 'ngMaterial', 'ngStorage', 'ngMessages', 'ui.bootstrap', 'ui.bootstrap.tpls']);
 
-app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
+app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
 
 
-    $httpProvider.interceptors.push(['$q', '$state', '$localStorage', '$rootScope', function($q, $state, $localStorage, $rootScope) {
+    $httpProvider.interceptors.push(['$q', '$state', '$localStorage', '$rootScope', function ($q, $state, $localStorage, $rootScope) {
         return {
-            'request': function(config) {
+            'request': function (config) {
                 config.headers = config.headers || {};
                 if ($localStorage.auth) {
                     config.headers.token = $localStorage.auth.token;
@@ -13,7 +13,7 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
                     delete config.headers.token;
                 return config;
             },
-            'responseError': function(response) {
+            'responseError': function (response) {
                 if (response.status === 401 || response.status === 403) {
                     $rootScope.showAlert('error', 'Không thể xác thực tài khoản. Vui lòng đăng nhập lại!');
                     $state.transitionTo('login');
@@ -38,7 +38,7 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
             templateUrl: 'anonymous/login.html',
             resolve: {
 
-                checkConn: function($http) {
+                checkConn: function ($http) {
 
                     return $http.head('/check');
 
@@ -49,11 +49,11 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
 
 
         })
-        .state('dashboard',{
+        .state('dashboard', {
 
             url: '/dashboard',
             templateUrl: 'dashboard.html',
-            onEnter: function($rootScope) {
+            onEnter: function ($rootScope) {
 
                 $rootScope.option = 'dashboard';
                 $rootScope.changeSidebarOptions([]);
@@ -65,14 +65,17 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
         .state('employee', {
 
             url: '/employee',
-            onEnter: function($rootScope) {
+            onEnter: function ($rootScope) {
 
                 $rootScope.option = 'employee';
                 $rootScope.changeSidebarOptions([
 
                     { link: 'employee.info', display: 'thông tin cá nhân', isActive: false },
-                    // { link: 'employee.all', display: 'danh sách khách hàng', isActive: false },
-                    { link: 'employee.list', display: 'danh sách hoạt động', isActive: false }
+                    { link: 'employee.customer_list', display: 'quản lý khách hàng', isActive: false },
+                    { link: 'employee.consulting', display: 'tư vấn', isActive: false },
+                    { link: 'employee.consulted', display: 'được tư vấn', isActive: false },
+                    { link: 'employee.study', display: 'nghiên cứu', isActive: false },
+                    { link: 'employee.instruct', display: 'hướng dẫn', isActive: false }
 
                 ]);
 
@@ -85,20 +88,28 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
             url: '/info',
             templateUrl: 'employees/details.html',
             controller: 'employeeInfoCtrl',
-            onEnter: function($rootScope) {
+            onEnter: function ($rootScope) {
 
-                $rootScope.sidebarOptions[0].isActive = true;
-                $rootScope.sidebarOptions[1].isActive = false;
+                var selectedIndex = 0;
+                angular.forEach($rootScope.sidebarOptions, function (item, index) {
+
+                    if (index === selectedIndex)
+                        item.isActive = true;
+                    else
+                        item.isActive = false;
+
+
+                });
 
             },
             resolve: {
 
-                information: function($http, $stateParams) {
+                information: function ($http, $stateParams) {
 
                     var query = '/employee/info';
                     if ($stateParams.id)
                         query += '?id=' + $stateParams.id;
-                    return $http.get(query).then(function(response) {
+                    return $http.get(query).then(function (response) {
 
                         return response.data;
 
@@ -110,25 +121,123 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
 
 
         })
-        .state('employee.list', {
+        .state('employee.customer_list', {
+
+            url: '/customer-list',
+            templateUrl: '/employees/customer_list.html',
+            controller: 'employeeCustomerListCtrl',
+            onEnter: function ($rootScope) {
+
+                var selectedIndex = 1;
+                angular.forEach($rootScope.sidebarOptions, function (item, index) {
+
+                    if (index === selectedIndex)
+                        item.isActive = true;
+                    else
+                        item.isActive = false;
 
 
-            url: '/list',
-            templateUrl: 'employees/list.html',
-            controller: 'employeeActivityListCtrl',
-            onEnter: function($rootScope) {
+                });
 
-                $rootScope.sidebarOptions[0].isActive = false;
-                $rootScope.sidebarOptions[1].isActive = true;
 
             }
 
 
         })
+        .state('employee.consulting', {
+
+            url: '/consulting',
+            templateUrl: '/employees/consulting.html',
+            onEnter: function ($rootScope) {
+
+                var selectedIndex = 2;
+                angular.forEach($rootScope.sidebarOptions, function (item, index) {
+
+                    if (index === selectedIndex)
+                        item.isActive = true;
+                    else
+                        item.isActive = false;
+
+
+                });
+
+
+            }
+
+
+
+        })
+        .state('employee.consulted', {
+
+            url: '/consulted',
+            templateUrl: '/employees/consulted.html',
+            onEnter: function ($rootScope) {
+
+                var selectedIndex = 3;
+                angular.forEach($rootScope.sidebarOptions, function (item, index) {
+
+                    if (index === selectedIndex)
+                        item.isActive = true;
+                    else
+                        item.isActive = false;
+
+
+                });
+
+
+            }
+
+
+        })
+        .state('employee.study', {
+
+            url: '/study',
+            templateUrl: '/employees/study.html',
+            onEnter: function ($rootScope) {
+
+                var selectedIndex = 4;
+                angular.forEach($rootScope.sidebarOptions, function (item, index) {
+
+                    if (index === selectedIndex)
+                        item.isActive = true;
+                    else
+                        item.isActive = false;
+
+
+                });
+
+
+            }
+
+
+        })
+        .state('employee.instruct', {
+
+            url: '/instruct',
+            templateUrl: '/employees/study.html',
+            onEnter: function ($rootScope) {
+
+                var selectedIndex = 5;
+                angular.forEach($rootScope.sidebarOptions, function (item, index) {
+
+                    if (index === selectedIndex)
+                        item.isActive = true;
+                    else
+                        item.isActive = false;
+
+
+                });
+
+
+            }
+
+
+        })
+
         .state('customer', {
 
             url: '/customer',
-            onEnter: function($rootScope) {
+            onEnter: function ($rootScope) {
 
                 $rootScope.sidebarOptions = [];
                 $rootScope.option = 'customer';
@@ -158,7 +267,7 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
         .state('consultancy', {
 
             url: '/consultancy',
-            onEnter: function($rootScope) {
+            onEnter: function ($rootScope) {
 
                 $rootScope.sidebarOptions = [];
                 $rootScope.option = 'consultancy';
@@ -187,7 +296,7 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
         .state('study', {
 
             url: '/study',
-            onEnter: function($rootScope) {
+            onEnter: function ($rootScope) {
 
                 $rootScope.sidebarOptions = [];
                 $rootScope.option = 'study';
@@ -215,7 +324,7 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
         .state('admin', {
 
             url: '/admin',
-            onEnter: function($rootScope) {
+            onEnter: function ($rootScope) {
 
                 $rootScope.option = 'admin';
                 $rootScope.changeSidebarOptions([
@@ -237,7 +346,7 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
             url: '/employee-list',
             templateUrl: 'admin/employee_list.html',
             controller: 'adminEmployeeListCtrl',
-            onEnter: function($rootScope) {
+            onEnter: function ($rootScope) {
 
                 $rootScope.sidebarOptions[0].isActive = true;
 
@@ -250,9 +359,9 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
             url: '/employee-details?id',
             templateUrl: 'admin/employee_details.html',
             controller: 'adminEmployeeDetailsCtrl',
-            onEnter: function($rootScope) {
+            onEnter: function ($rootScope) {
 
-                angular.forEach($rootScope.sidebarOptions, function(item) {
+                angular.forEach($rootScope.sidebarOptions, function (item) {
 
                     item.isActive = false;
 
@@ -261,9 +370,9 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
             },
             resolve: {
 
-                information: function($stateParams, $http) {
+                information: function ($stateParams, $http) {
 
-                    return $http.get('/employee/info?id=' + $stateParams.id).then(function(response) {
+                    return $http.get('/employee/info?id=' + $stateParams.id).then(function (response) {
 
                         return response.data;
 
@@ -280,7 +389,7 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
 
             url: '/500',
             template: '<span>Oops! The server is stopped or your connection is broken. Try again later!</span>',
-            onEnter: function($rootScope) {
+            onEnter: function ($rootScope) {
 
                 angular.element('footer, header').hide();
                 angular.element('#content').removeClass('content');
@@ -293,10 +402,10 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
 
 });
 
-app.run(function($rootScope, $timeout, $mdDialog, $localStorage, $transitions, $timeout, $state,$window) {
+app.run(function ($rootScope, $timeout, $mdDialog, $localStorage, $transitions, $timeout, $state, $window) {
 
     $rootScope.isLoading = false;
-    $transitions.onStart({}, function(trans) {
+    $transitions.onStart({}, function (trans) {
 
         console.log('On start');
         if (trans._targetState._identifier === '500')
@@ -313,9 +422,9 @@ app.run(function($rootScope, $timeout, $mdDialog, $localStorage, $transitions, $
 
     $transitions.onBefore({
 
-        to: function(state) { return state.name !== 'login' && state.name !== '500'; }
+        to: function (state) { return state.name !== 'login' && state.name !== '500'; }
 
-    }, function(trans) {
+    }, function (trans) {
 
         sidebar.addClass('small');
         if ($localStorage.auth)
@@ -326,7 +435,7 @@ app.run(function($rootScope, $timeout, $mdDialog, $localStorage, $transitions, $
 
 
 
-    $transitions.onBefore({ to: 'login' }, function(trans) {
+    $transitions.onBefore({ to: 'login' }, function (trans) {
 
         console.log('On before');
         if ($localStorage.auth)
@@ -336,16 +445,16 @@ app.run(function($rootScope, $timeout, $mdDialog, $localStorage, $transitions, $
 
     })
 
-    $transitions.onSuccess({}, function(trans) {
+    $transitions.onSuccess({}, function (trans) {
 
         console.log('On success');
-        $window.scrollTo(0,0);
+        $window.scrollTo(0, 0);
         $rootScope.stopLoading();
         return true;
 
     })
 
-    $transitions.onError({}, function(trans) {
+    $transitions.onError({}, function (trans) {
 
         console.log('On error');
 
@@ -375,7 +484,7 @@ app.run(function($rootScope, $timeout, $mdDialog, $localStorage, $transitions, $
     $rootScope.DTB_ERR = 'Lỗi trong cơ sở dữ liệu, vui lòng thử lại sau!';
     $rootScope.UPDATE_SUCCESS = 'Cập nhật thành công';
 
-    $rootScope.ceil = function(number) {
+    $rootScope.ceil = function (number) {
 
         console.log('Hello ' + number);
         return Math.ceil(number);
@@ -383,7 +492,7 @@ app.run(function($rootScope, $timeout, $mdDialog, $localStorage, $transitions, $
     }
 
 
-    $rootScope.logout = function() {
+    $rootScope.logout = function () {
 
         if ($localStorage.auth)
             delete $localStorage.auth;
@@ -392,16 +501,16 @@ app.run(function($rootScope, $timeout, $mdDialog, $localStorage, $transitions, $
     }
 
 
-    $rootScope.startLoading = function() {
+    $rootScope.startLoading = function () {
 
         $rootScope.isLoading = true;
         console.log('Start loading');
 
     }
 
-    $rootScope.stopLoading = function() {
+    $rootScope.stopLoading = function () {
 
-        $timeout(function() {
+        $timeout(function () {
 
             $rootScope.isLoading = false;
             console.log('Stop loading');
@@ -430,9 +539,9 @@ app.run(function($rootScope, $timeout, $mdDialog, $localStorage, $transitions, $
 
     }*/
 
-    $rootScope.isAuthenticated = function() { return $localStorage.auth; }
+    $rootScope.isAuthenticated = function () { return $localStorage.auth; }
 
-    $rootScope.getUsername = function() {
+    $rootScope.getUsername = function () {
 
         if ($localStorage.auth)
             return $localStorage.auth.username;
@@ -440,7 +549,7 @@ app.run(function($rootScope, $timeout, $mdDialog, $localStorage, $transitions, $
 
     }
 
-    $rootScope.changeSidebarOptions = function(object) {
+    $rootScope.changeSidebarOptions = function (object) {
 
         $rootScope.sidebarOptions = object;
         sidebar.addClass('small');
@@ -448,7 +557,7 @@ app.run(function($rootScope, $timeout, $mdDialog, $localStorage, $transitions, $
     }
 
 
-    $rootScope.toggleSidebar = function() {
+    $rootScope.toggleSidebar = function () {
 
         // if (sidebar.hasClass('small'))
         //     $timeout(function() {
@@ -466,7 +575,7 @@ app.run(function($rootScope, $timeout, $mdDialog, $localStorage, $transitions, $
 
     }
 
-    $rootScope.showAlert = function(type, content) {
+    $rootScope.showAlert = function (type, content) {
         // Appending dialog to document.body to cover sidenav in docs app
         // Modal dialogs should fully cover application
         // to prevent interaction outside of dialog
@@ -475,16 +584,16 @@ app.run(function($rootScope, $timeout, $mdDialog, $localStorage, $transitions, $
 
         $mdDialog.show(
             $mdDialog.alert()
-            .parent(angular.element(document.body))
-            .clickOutsideToClose(true)
-            .title(title)
-            .textContent(content)
-            .ariaLabel(type)
-            .ok('OK!')
+                .parent(angular.element(document.body))
+                .clickOutsideToClose(true)
+                .title(title)
+                .textContent(content)
+                .ariaLabel(type)
+                .ok('OK!')
         );
     };
 
-    $rootScope.showConfirm = function(question, callback) {
+    $rootScope.showConfirm = function (question, callback) {
 
         var confirm = $mdDialog.confirm()
             .title('Are you sure?')
@@ -494,11 +603,11 @@ app.run(function($rootScope, $timeout, $mdDialog, $localStorage, $transitions, $
             .ok('YES')
             .cancel('NO');
 
-        $mdDialog.show(confirm).then(function() {
+        $mdDialog.show(confirm).then(function () {
 
             callback(true);
 
-        }, function() {
+        }, function () {
 
             callback(false);
 
@@ -506,31 +615,58 @@ app.run(function($rootScope, $timeout, $mdDialog, $localStorage, $transitions, $
     };
 });
 
-app.directive('routerSection', function($rootScope) {
+app.directive('routerSection', function ($rootScope) {
     return {
         restrict: 'A'
     };
 });
 
-app.directive('filterBox', function() {
+app.directive('filterBox', function () {
 
     return {
 
         restrict: 'EA',
         scope: {
 
-            filterBoxId: '@'
+            filterBoxId: '@',
+            filterFunc: '&'
+
         },
         templateUrl: 'components/filter-box.component.html',
-        link: function(scope, element) {
+        link: function (scope, element) {
 
             scope.mode = 'optional';
             scope.recentDays = '0';
+            scope.startFiltering = function () {
 
-            $(function() {
+                var startDate = new Date(scope.startDate);
+                var endDate = new Date(scope.endDate);
+
+                if (scope.mode !== 'optional'){
+
+                    startDate = new Date();
+                    endDate = new Date();
+                    var recentDays = Number(scope.recentDays);
+                    startDate.setDate(endDate.getDate() - recentDays);
+
+                }
+
+                scope.filterFunc({
+                    dateRange: [
+
+                        startDate,
+                        endDate
+
+
+                    ]
+                });
+
+            };
+
+            $(function () {
                 $('.begin-date, .end-date').datepicker();
 
-                scope.$watch('recentDays', function(newValue, oldValue) {
+                scope.$watch('recentDays', function (newValue, oldValue) {
 
                     console.log(newValue === '0');
                     if (newValue === '0')
@@ -551,7 +687,7 @@ app.directive('filterBox', function() {
 
 })
 
-app.directive('appTable', function() {
+app.directive('appTable', function () {
 
     return {
 
@@ -568,12 +704,12 @@ app.directive('appTable', function() {
 
         },
         templateUrl: 'components/table.component.html',
-        link: function(scope, element, attrs) {
+        link: function (scope, element, attrs) {
 
             scope.mode = 'VIEW';
             scope.currentPage = 1;
 
-            scope.getNumberOfEmptyRows = function(filtered) {
+            scope.getNumberOfEmptyRows = function (filtered) {
 
                 if (!filtered || filtered.length === 0)
                     return 10;
@@ -594,7 +730,7 @@ app.directive('appTable', function() {
 
 })
 
-app.directive('jtable', function($localStorage, $http, $rootScope) {
+app.directive('jtable', function ($localStorage, $http, $rootScope) {
 
 
     return {
@@ -615,37 +751,41 @@ app.directive('jtable', function($localStorage, $http, $rootScope) {
 
         },
         template: `<div id="{{jtableId}}"></div>`,
-        link: function(scope, element) {
+        link: function (scope, element) {
 
             var selector = '#' + scope.jtableId;
 
-            $(document).ready(function() {
+            $(document).ready(function () {
                 $(selector).jtable({
                     title: scope.title,
                     paging: true, //Enable paging
-                    recordsLoaded: function(event, data) {
-                        $('.jtable-data-row').click(function() {
+                    recordsLoaded: function (event, data) {
+                        $('.jtable-data-row').click(function () {
                             var row_id = $(this).attr('data-record-key');
                             console.log(this);
-                            scope.recordClick({ EmplID: row_id });
+                            scope.recordClick({ id: row_id });
                         });
                     },
                     jqueryuiTheme: true,
                     actions: {
-                        listAction: function(postData, params) {
+                        listAction: function (postData, params) {
 
-                            return $.Deferred(function($dfd) {
+                            var dateRange = postData ? postData.dateRange : undefined;
+                            console.log(dateRange);
+                            return $.Deferred(function ($dfd) {
+
+
                                 $.ajax({
-                                    url: `${scope.listActionUrl}?jtStartIndex=${params.jtStartIndex}&jtPageSize=${params.jtPageSize}`,
+                                    url: `${scope.listActionUrl}?jtStartIndex=${params.jtStartIndex}&jtPageSize=${params.jtPageSize}&dateRange=${dateRange}`,
                                     type: 'GET',
                                     dataType: 'json',
-                                    beforeSend: function(request) {
+                                    beforeSend: function (request) {
                                         request.setRequestHeader('token', $localStorage.auth.token);
                                     },
-                                    success: function(data) {
+                                    success: function (data) {
                                         $dfd.resolve(data);
                                     },
-                                    error: function() {
+                                    error: function () {
                                         $dfd.reject();
                                     }
                                 });
@@ -654,22 +794,24 @@ app.directive('jtable', function($localStorage, $http, $rootScope) {
 
 
                         },
-                        createAction: scope.createActionUrl ? function(postData) {
+                        createAction: scope.createActionUrl ? function (postData) {
 
-                            return $.Deferred(function($dfd) {
+                            console.log(postData);
+                            return $.Deferred(function ($dfd) {
+
                                 $.ajax({
                                     url: scope.createActionUrl,
                                     type: 'POST',
                                     dataType: 'json',
                                     data: postData,
-                                    beforeSend: function(request) {
+                                    beforeSend: function (request) {
                                         request.setRequestHeader('token', $localStorage.auth.token);
                                     },
-                                    success: function(data) {
+                                    success: function (data) {
 
                                         $dfd.resolve(data);
                                     },
-                                    error: function() {
+                                    error: function () {
                                         $dfd.reject();
                                     }
                                 });
@@ -678,21 +820,21 @@ app.directive('jtable', function($localStorage, $http, $rootScope) {
 
 
                         } : undefined,
-                        updateAction: scope.updateActionUrl ? function(postData,params) {
+                        updateAction: scope.updateActionUrl ? function (postData, params) {
 
-                            return $.Deferred(function($dfd) {
+                            return $.Deferred(function ($dfd) {
                                 $.ajax({
                                     url: scope.updateActionUrl,
                                     type: 'PUT',
                                     dataType: 'json',
                                     data: postData,
-                                    beforeSend: function(request) {
+                                    beforeSend: function (request) {
                                         request.setRequestHeader('token', $localStorage.auth.token);
                                     },
-                                    success: function(data) {
+                                    success: function (data) {
                                         $dfd.resolve(data);
                                     },
-                                    error: function() {
+                                    error: function () {
                                         $dfd.reject();
                                     }
                                 });
@@ -701,21 +843,21 @@ app.directive('jtable', function($localStorage, $http, $rootScope) {
 
 
                         } : undefined,
-                        deleteAction: scope.deleteActionUrl ? function(postData,params) {
+                        deleteAction: scope.deleteActionUrl ? function (postData, params) {
 
-                            return $.Deferred(function($dfd) {
+                            return $.Deferred(function ($dfd) {
                                 $.ajax({
                                     url: scope.deleteActionUrl,
                                     type: 'DELETE',
                                     dataType: 'json',
                                     data: postData,
-                                    beforeSend: function(request) {
+                                    beforeSend: function (request) {
                                         request.setRequestHeader('token', $localStorage.auth.token);
                                     },
-                                    success: function(data) {
+                                    success: function (data) {
                                         $dfd.resolve(data);
                                     },
-                                    error: function() {
+                                    error: function () {
                                         $dfd.reject();
                                     }
                                 });
@@ -727,12 +869,24 @@ app.directive('jtable', function($localStorage, $http, $rootScope) {
 
                     },
 
-                    fields: scope.fields
+                    fields: scope.fields,
+                    formCreated: function (event, data) {
+
+                        data.form.find('select[name=ResponsibleEmpl]').attr('multiple', 'multiple');
+                        data.form.find('input[name=Time]').datepicker();
+                    }
                 });
 
 
                 if (scope.instantLoad)
                     $(selector).jtable('load');
+
+                $rootScope.$on('filter', function (event, object) {
+
+                    $(selector).jtable('load', { dateRange: object });
+
+                })
+
 
             });
 
@@ -747,21 +901,21 @@ app.directive('jtable', function($localStorage, $http, $rootScope) {
 
 })
 
-app.directive('compareTo', function() {
+app.directive('compareTo', function () {
 
     return {
         require: "ngModel",
         scope: {
             compareTolValue: "=compareTo"
         },
-        link: function(scope, element, attributes, ngModel) {
+        link: function (scope, element, attributes, ngModel) {
 
-            ngModel.$validators.compareTo = function(modelValue) {
+            ngModel.$validators.compareTo = function (modelValue) {
 
                 return modelValue === scope.compareTolValue;
             };
 
-            scope.$watch("compareTolValue", function() {
+            scope.$watch("compareTolValue", function () {
                 ngModel.$validate();
             });
         }

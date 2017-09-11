@@ -36,7 +36,7 @@ var loadInfo = function (id, res) {
 
 module.exports = {
 
-    getInfo: function (req, res) {
+    get: function (req, res) {
 
         var id = req.query.id ? req.query.id : req.id;
 
@@ -44,7 +44,7 @@ module.exports = {
 
     },
 
-    changeInfo: function (req, res) {
+    change: function (req, res) {
 
         employee.update({ EmplID: req.id }, { $set: req.body }, function (err, docs) {
 
@@ -60,20 +60,28 @@ module.exports = {
 
     },
 
-    getAllId: function (req, res) {
+    listAllID: function (req, res) {
 
-        employee.find().select('EmplID').exec(function (err, docs) {
+        employee.find().select('EmplID Name').exec(function (err, docs) {
 
             if (err) {
                 console.log(err);
                 res.json({ Result: 'ERROR', Message: err });
             } else {
 
+                var options = [];
+                for(var i=0; i<docs.length; i++)
+                    options[i] = {
+
+                        DisplayText: `${docs[i].EmplID} - ${docs[i].Name}`,
+                        Value: docs[i].EmplID
+
+
+                    }
                 res.json({
 
                     Result: 'OK',
-                    TotalRecordCount: docs.length,
-                    Records: docs
+                    Options: options
 
                 })
             }
@@ -84,7 +92,7 @@ module.exports = {
     },
 
 
-    getAllInfo: function (req, res) {
+    list: function (req, res) {
 
         employee.find(function (err, docs) {
 
@@ -108,7 +116,7 @@ module.exports = {
 
     },
 
-    addEmployee: function (req, res) {
+    add: function (req, res) {
 
         var newEmployee = new employee(req.body)
 
@@ -139,7 +147,7 @@ module.exports = {
 
     },
 
-    updateEmployee: function (req, res) {
+    update: function (req, res) {
 
         employee.update(req.body.EmplID, getRidOfKey(req.body), function (err, doc) {
 
@@ -169,7 +177,7 @@ module.exports = {
 
     },
 
-    deleteEmployee: function (req, res) {
+    delete: function (req, res) {
 
         employee.remove(req.body, function (err) {
 

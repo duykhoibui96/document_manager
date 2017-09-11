@@ -17,6 +17,6 @@ var CustomerSchema = new Schema({
     ResponsibleEmpl: [Number]
     
 
-}, { collection: 'employee' });
+}, { collection: 'customer' });
 
 module.exports = mongoose.model('Customer', CustomerSchema);

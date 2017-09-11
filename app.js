@@ -9,9 +9,11 @@ var mongoose = require('mongoose');
 var index = require('./routes/index');
 var employee = require('./routes/employee');
 var accounts = require('./routes/accounts');
+var customer = require('./routes/customer');
+var consultancy = require('./routes/consultancy');
 
-// mongoose.connect(`mongodb://localhost/document_manager`);
-mongoose.connect('mongodb://buiduykhoi:buiduykhoi@ds149763.mlab.com:49763/document_manager');
+mongoose.connect(`mongodb://localhost/document_manager`);
+//mongoose.connect('mongodb://buiduykhoi:buiduykhoi@ds149763.mlab.com:49763/document_manager');
 
 var app = express();
 
@@ -30,6 +32,8 @@ app.use('/lib', express.static(path.join(__dirname, 'bower_components')));
 app.use('/', index);
 app.use('/employee', employee);
 app.use('/accounts', accounts);
+app.use('/customer', customer);
+app.use('/consultancy', consultancy);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

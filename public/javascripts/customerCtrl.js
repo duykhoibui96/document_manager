@@ -18,7 +18,16 @@ app.controller('customerListCtrl', function ($scope, $http) {
             title: 'Mã khách hàng',
             width: '10%',
             key: true,
-            edit: false
+            edit: true,
+            create: true,
+            input: function (data) {
+                if (data.record) {
+                    return '<input type="text" name="CustomerID" readonly value="' + data.record.CustomerID + '"/>';
+                } else {
+                    return `<input type="text" name="CustomerID" readonly value="${Date.now()}"/>`;
+                }
+
+            }
 
         },
 
@@ -39,35 +48,35 @@ app.controller('customerListCtrl', function ($scope, $http) {
         Phone: {
 
             title: 'Số điện thoại',
-            width: '20%'
+            width: '10%'
 
 
         },
         Representative: {
 
             title: 'Người đại diện',
-            width: '20%'
+            width: '15%'
 
 
         },
         ResponsibleEmpl: {
 
             title: 'Nhân viên quản lý',
-            width: '10%',
-            options:  [
+            width: '20%',
+            options: '/employee/all-id',
+            display: function (data) {
 
-                   { DisplayText: 'OK', Value: 1 }
+                console.log(data);
+                return `<span>${data.record.ResponsibleEmpl.join()}</span>`;
 
-
-
-            ]
+            }
 
 
         }
 
 
 
-    }
+    };
 
     $scope.$watch('listType', function (newValue, oldValue) {
 

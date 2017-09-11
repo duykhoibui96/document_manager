@@ -3,12 +3,12 @@ var api = require('../controllers/EmployeeCtrl');
 var checkAuth = require('../models/checkAuth');
 var router = express.Router();
 
-router.get('/info',checkAuth.forAngular,api.getInfo);
-router.get('/all',checkAuth.forJtable,api.getAllInfo);
-router.post('/all-id',api.getAllId);
-router.post('/add',checkAuth.forJtable,api.addEmployee);
-router.delete('/delete',checkAuth.forJtable,api.deleteEmployee);
-router.put('/update',checkAuth.forJtable,api.updateEmployee);
-router.put('/info',checkAuth.forAngular,api.changeInfo);
+router.get('/info',checkAuth.forAngular,api.get);
+router.get('/all',checkAuth.forJtable,api.list);
+router.post('/all-id',api.listAllID);
+router.post('/add',checkAuth.forJtable,api.add);
+router.delete('/delete',checkAuth.forJtable,api.delete);
+router.put('/update',checkAuth.forJtable,api.update);
+router.put('/info',checkAuth.forAngular,api.change);
 
 module.exports = router;

@@ -2,14 +2,14 @@
     <div style="width: 100%; padding: 10px; background: #3092c0; color: white">
         <span style="font-size: 120%; padding-left: 30px">Bộ lọc danh sách</span>
     </div>
-    <form class="row" style="padding: 30px 50px">
+    <form class="row" style="padding: 30px 50px" ng-submit="startFiltering()">
         <div class="col-sm-4 col-xs-12" style="padding-bottom: 10px" ng-style="{ opacity: mode == 'recent' ? 0.5 : 1 }">
             <label for="">Bắt đầu</label>
-            <input type="text" class="form-control custom-input begin-date" ng-disabled="mode == 'recent'">
+            <input type="text" class="form-control custom-input begin-date" ng-disabled="mode == 'recent'" ng-model="startDate">
         </div>
         <div class="col-sm-4 col-xs-12" style="padding-bottom: 10px" ng-style="{ opacity: mode == 'recent' ? 0.5 : 1 }">
             <label for="">Kết thúc</label>
-            <input type="text" class="form-control custom-input end-date" ng-disabled="mode == 'recent'">
+            <input type="text" class="form-control custom-input end-date" ng-disabled="mode == 'recent'" ng-model="endDate">
         </div>
         <div class="col-sm-4 col-xs-12" style="padding-bottom: 10px">
             <label for="">Khoảng thời gian</label>
@@ -20,9 +20,9 @@
                 <option value="30">30 ngày gần đây</option>
                 <option value="0">Tùy chỉnh</option>
             </select>
-        </div>  
+        </div>
+        <div class="text-center">
+            <button type="submit" class="button has-icon primary submit">tiến hành lọc</button>
+        </div>   
     </form>
-    <div class="text-center">
-    	<button type="button" class="button has-icon primary submit">tiến hành lọc</button>
-    </div> 
 </div>

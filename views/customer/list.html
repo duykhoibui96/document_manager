@@ -1,20 +1,21 @@
 <div class="title title-icon-list">
     Danh sách khách hàng
 </div>
-<div class="text-center" style="margin-bottom: 50px">
-	<span style="margin-right: 20px">Loại danh sách</span>
+<!-- <div class="text-center" style="margin-bottom: 50px">
+    <span style="margin-right: 20px">Loại danh sách</span>
     <select ng-model="listType" class="form-control" style="width: 20%; display: inline-block">
         <option ng-value="opt.value" ng-repeat="opt in types">{{ opt.display }}</option>
     </select>
 </div>
 <div ng-switch on="listType">
     <div ng-switch-when="not-consulted">
-        <jtable jtable-id="not-consulted-jtable" title="Danh sách chưa tư vấn" list-action-url="/customer/all?filter=notconsulted" fields="fields"></jtable>
+        <jtable jtable-id="not-consulted-jtable" title="Danh sách chưa tư vấn" list-action-url="/customer/all" fields="fields"></jtable>
     </div>
     <div ng-switch-when="consulted">
-        <jtable jtable-id="consulted-jtable" title="Danh sách đã tư vấn" list-action-url="/customer/all?filter=consulted" fields="fields"></jtable>
+        <jtable jtable-id="consulted-jtable" title="Danh sách đã tư vấn" list-action-url="/customer/all" fields="fields"></jtable>
     </div>
     <div ng-switch-default>
-    	<jtable jtable-id="all-jtable" title="Tất cả" list-action-url="/customer/all?filter=all" create-action-url="/customer/add" fields="fields"></jtable>
+        <jtable jtable-id="all-jtable" title="Tất cả" list-action-url="/customer/all" create-action-url="/customer/add" fields="fields" instant-load="true"></jtable>
     </div>
-</div>
+</div> -->
+<jtable jtable-id="all-jtable" title="Khách hàng" list-action-url="/customer/all" create-action-url="/customer/add" update-action-url="/customer/update" delete-action-url="/customer/delete" fields="fields" instant-load="true"></jtable>
