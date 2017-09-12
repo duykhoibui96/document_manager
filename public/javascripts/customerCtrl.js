@@ -110,5 +110,90 @@ app.controller('customerListCtrl', function ($scope, $http, $stateParams, $state
 
     })
 
+    $scope.seeDetails = function (id) {
+
+        $state.transitionTo('customer.details', { CustomerID: id });
+
+    }
+
+
+})
+
+app.controller('customerDetailsCtrl', function ($scope, information) {
+
+    $scope.mainInfo = information.Record;
+
+    $scope.attachedData = {
+        
+        CustomerID: $scope.mainInfo.CustomerID
+        
+    };
+    $scope.listActionUrl = '/employee/list';
+    $scope.createActionUrl = '/customer/add';
+
+    $scope.fields = {
+
+        EmplID: {
+            key: true,
+            title: 'Mã nhân viên',
+            width: '10%',
+            edit: false,
+            create: true,
+            options: function(data) {
+
+                if (data.source == 'list')
+                    return [{
+
+                        Value: data.record.EmplID,
+                        DisplayText: data.record.EmplID
+
+                    }];
+
+                return '/employee/all-id';
+
+            }
+        },
+        EmplRcd: {
+
+            title: 'Record',
+            list: false,
+            edit: false,
+            create: false
+
+        },
+        Name: {
+            title: 'Tên nhân viên',
+            width: '18%',
+            edit: false,
+            create: false
+        },
+        ChildDepartment: {
+            title: 'Phòng ban',
+            width: '13%',
+            create: false
+
+        },
+        OfficerCode: {
+            title: 'Chức vụ',
+            width: '18%',
+            create: false
+
+        },
+        JobTitle: {
+            title: 'Công việc',
+            width: '23%',
+            create: false
+
+        },
+        Mail: {
+
+            title: 'Email',
+            edit: false,
+            width: '18%',
+            create: false
+
+        }
+    };
+
 
 })

@@ -46,6 +46,7 @@ app.controller('consultancyListCtrl', function ($scope, $http, $rootScope, $stat
         ConsultingEmplID: {
             title: 'Nhân viên tư vấn',
             width: '20%',
+            list: $scope.mode !== 'consulting',
             options: $scope.mode === 'consulting' ? '/employee/get/' + $localStorage.auth.token : '/employee/all-id'
         },
         CustomerID: {
@@ -58,6 +59,7 @@ app.controller('consultancyListCtrl', function ($scope, $http, $rootScope, $stat
         ConsultedEmplID: {
             title: 'Nhân viên được tư vấn',
             width: '20%',
+            list: $scope.mode !== 'consulted',
             options: $scope.mode === 'consulted' ? '/employee/get/' + $localStorage.auth.token : '/employee/all-id'
         },
 

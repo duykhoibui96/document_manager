@@ -4,6 +4,7 @@ var checkAuth = require('../models/checkAuth');
 var router = express.Router();
 
 router.post('/list/:id', checkAuth.forJtable, api.list);
+router.get('/get/:id', checkAuth.forAngular, api.get);
 router.post('/all-id', api.listAllID);
 router.post('/add', checkAuth.forJtable, api.add);
 router.put('/update', checkAuth.forJtable, api.update);

@@ -1,6 +1,6 @@
 app.controller('employeeInfoCtrl', function ($scope, $http, $state, $stateParams, information, $rootScope) {
 
-    $scope.mainInfo = information.data;
+    $scope.mainInfo = information.Record;
     $scope.info = Object.assign({}, $scope.mainInfo, { EmplID: undefined, Name: undefined, Email: undefined });
     $scope.mode = 'info';
     $scope.updateInformation = function () {
@@ -11,18 +11,14 @@ app.controller('employeeInfoCtrl', function ($scope, $http, $state, $stateParams
             $scope.isLoading = false;
             var res = response.data;
 
-            switch (res.ret) {
-                case -1:
+            switch (res.Result) {
+                case 'ERROR':
                     $rootScope.showAlert('error', $rootScope.SERVER_ERR);
-                    break;
-
-                case 0:
-                    $rootScope.showAlert('error', $rootScope.DTB_ERR);
                     break;
 
                 default:
                     $rootScope.showAlert('success', $rootScope.UPDATE_SUCCESS);
-                    $scope.mainInfo = res.data;
+                    $scope.mainInfo = res.Record;
 
             }
 
@@ -43,13 +39,9 @@ app.controller('employeeInfoCtrl', function ($scope, $http, $state, $stateParams
             $scope.isLoading = false;
             var res = response.data;
 
-            switch (res.ret) {
-                case -1:
+            switch (res.Result) {
+                case 'ERROR':
                     $rootScope.showAlert('error', $rootScope.SERVER_ERR);
-                    break;
-
-                case 0:
-                    $rootScope.showAlert('error', $rootScope.DTB_ERR);
                     break;
 
                 default:

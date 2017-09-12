@@ -40,33 +40,68 @@ module.exports = {
         });
 
     },
-    add: function (req, res) {
 
-        var newCustomer = new customer(req.body);
+    get: function (req, res) {
 
-        newCustomer.save(function (err, doc) {
+        var id = req.params.id;
+
+        customer.findOne({ CustomerID: id }, function (err, doc) {
 
             if (err) {
                 console.log(err);
-                res.json({
-
-                    Result: 'ERROR',
-                    Message: 'Database Error'
-
-                })
+                res.json({ Result: 'ERROR', Message: err });
             } else {
+
                 res.json({
 
                     Result: 'OK',
                     Record: doc
 
-
                 })
-
             }
 
 
         })
+
+
+    },
+
+
+    add: function (req, res) {
+
+        var emplID = req.body.EmplID;
+
+        if (emplID) {
+
+        }
+        else {
+            var newCustomer = new customer(req.body);
+
+            newCustomer.save(function (err, doc) {
+
+                if (err) {
+                    console.log(err);
+                    res.json({
+
+                        Result: 'ERROR',
+                        Message: 'Database Error'
+
+                    })
+                } else {
+                    res.json({
+
+                        Result: 'OK',
+                        Record: doc
+
+
+                    })
+
+                }
+
+
+            })
+        }
+
 
 
     },
@@ -81,21 +116,21 @@ module.exports = {
         console.log(EmplID);
         if (!isNaN(EmplID))
             filterObj = {
-                
+
                 ResponsibleEmpl: { '$in': [`${EmplID}`] }
-                 
+
             };
-        
+
         console.log(filterObj);
 
-        customer.find(filterObj,function (err, docs) {
+        customer.find(filterObj, function (err, docs) {
 
             if (err) {
                 console.log(err);
                 res.json({ Result: 'ERROR', Message: err });
             } else {
 
-                common.filterList(docs,req,res);
+                common.filterList(docs, req, res);
             }
 
 

@@ -1,4 +1,5 @@
 var employee = require('../models/Employee');
+var customer = require('../models/Customer');
 var common = require('../models/common');
 
 var getRidOfKey = function (object) {
@@ -16,18 +17,15 @@ var loadInfo = function (id, res) {
 
         if (err) {
             console.log(err);
-            res.json({ ret: -1 });
+            res.json({ Result: 'ERROR' });
         } else {
-            if (doc == null)
-                res.json({ ret: 0 });
-            else {
-                res.json({
 
-                    ret: 1,
-                    data: doc
+            res.json({
 
-                });
-            }
+                Result: 'OK',
+                Record: doc
+
+            });
         }
 
     });
@@ -45,14 +43,13 @@ module.exports = {
 
     },
 
-    get_reduced: function(req,res) {
+    get_reduced: function (req, res) {
 
-        var id= req.params.id;
+        var id = req.params.id;
 
-        employee.findOne({EmplID: id}).select('EmplID Name').exec(function(err,doc){
+        employee.findOne({ EmplID: id }).select('EmplID Name').exec(function (err, doc) {
 
-            if (err)
-            {
+            if (err) {
                 console.log(err);
                 res.json({
 
@@ -61,8 +58,7 @@ module.exports = {
 
                 });
             }
-            else
-            {
+            else {
                 var result = [];
                 result.push({
 
@@ -91,7 +87,7 @@ module.exports = {
 
             if (err) {
                 console.log(err);
-                res.json({ ret: -1 });
+                res.json({ Result: 'ERROR' });
             } else
                 loadInfo(req.id, res);
 
@@ -111,7 +107,7 @@ module.exports = {
             } else {
 
                 var options = [];
-                for(var i=0; i<docs.length; i++)
+                for (var i = 0; i < docs.length; i++)
                     options[i] = {
 
                         DisplayText: `${docs[i].EmplID} - ${docs[i].Name}`,
@@ -135,18 +131,58 @@ module.exports = {
 
     list: function (req, res) {
 
-        employee.find(function (err, docs) {
+        var customerID = req.body.CustomerID;
+        var filterObj = {};
 
-            if (err) {
-                console.log(err);
-                res.json({ Result: 'ERROR', Message: err });
-            } else {
+        if (customerID) {
 
-                common.filterList(docs,req,res);
-            }
+            customer.findOne({ CustomerID: customerID }, function (err, doc) {
+
+                if (err || doc == null) {
+                    console.log(err);
+                    res.json({ Result: 'ERROR', Message: err });
+                } else {
+
+                    var idList = doc.ResponsibleEmpl;
+                    filterObj = {
+
+                        EmplID: { $in: idList }
+
+                    };
+                    employee.find(filterObj, function (err, docs) {
+
+                        if (err) {
+                            console.log(err);
+                            res.json({ Result: 'ERROR', Message: err });
+                        } else {
+
+                            common.filterList(docs, req, res);
+                        }
 
 
-        })
+                    })
+
+                }
+
+
+
+            })
+
+        }
+        else
+
+            employee.find(filterObj, function (err, docs) {
+
+                if (err) {
+                    console.log(err);
+                    res.json({ Result: 'ERROR', Message: err });
+                } else {
+
+                    common.filterList(docs, req, res);
+                }
+
+
+            })
 
 
     },

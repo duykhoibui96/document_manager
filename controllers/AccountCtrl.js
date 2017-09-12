@@ -2,11 +2,11 @@ var account = require('../models/Account');
 
 module.exports = {
 
-    authenticate: function(req, res) {
+    authenticate: function (req, res) {
 
         var data = req.body;
 
-        account.findOne(data, function(err, doc) {
+        account.findOne(data, function (err, doc) {
 
             if (err) {
                 console.log(err);
@@ -28,28 +28,25 @@ module.exports = {
 
     },
 
-    updateInfo: function(req, res) {
+    updateInfo: function (req, res) {
 
         var data = req.body;
         var id = req.id;
 
-        account.findOneAndUpdate({ EmplID: id }, { $set: data }, { new: true }, function(err, doc) {
+        account.findOneAndUpdate({ EmplID: id }, { $set: data }, { new: true }, function (err, doc) {
 
             if (err) {
                 console.log(err);
-                res.json({ ret: -1 });
+                res.json({ Result: 'ERROR' });
             } else {
-                if (doc == null)
-                    res.json({ ret: 0 });
-                else {
-                    console.log(doc);
-                    res.json({
 
-                        ret: 1,
-                        data: doc
+                res.json({
 
-                    });
-                }
+                    Result: 'OK',
+                    Record: doc
+
+                });
+
             }
 
         })

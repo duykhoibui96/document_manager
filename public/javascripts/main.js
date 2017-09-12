@@ -1,4 +1,4 @@
-var app = angular.module('app', ['ngRoute', 'ui.router', 'ngAnimate', 'ngLocationUpdate', 'ngMaterial', 'ngStorage', 'ngMessages', 'ui.bootstrap', 'ui.bootstrap.tpls']);
+var app = angular.module('app', ['ngRoute', 'ui.router', 'ngAnimate', 'ngMaterial', 'ngStorage', 'ngMessages', 'ui.bootstrap', 'ui.bootstrap.tpls']);
 
 app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
 
@@ -56,7 +56,7 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             onEnter: function ($rootScope) {
 
                 $rootScope.option = 'dashboard';
-                $rootScope.changeSidebarOptions([]);
+                //$rootScope.changeSidebarOptions([]);
 
             }
 
@@ -90,16 +90,16 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             controller: 'employeeInfoCtrl',
             onEnter: function ($rootScope) {
 
-                var selectedIndex = 0;
-                angular.forEach($rootScope.sidebarOptions, function (item, index) {
+                // var selectedIndex = 0;
+                // angular.forEach($rootScope.sidebarOptions, function (item, index) {
 
-                    if (index === selectedIndex)
-                        item.isActive = true;
-                    else
-                        item.isActive = false;
+                //     if (index === selectedIndex)
+                //         item.isActive = true;
+                //     else
+                //         item.isActive = false;
 
 
-                });
+                // });
 
             },
             resolve: {
@@ -153,8 +153,24 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
         })
         .state('customer.details', {
 
-            url: '/details',
-            templateUrl: 'customer/details.html'
+            url: '/details?CustomerID',
+            templateUrl: 'customer/details.html',
+            controller: 'customerDetailsCtrl',
+            resolve: {
+
+                information: function($http,$stateParams) {
+
+                    return $http.get('/customer/get/' + $stateParams.CustomerID).then(function(response){
+
+                        return response.data;
+
+                    })
+
+
+                }
+
+
+            }
 
 
 
@@ -164,7 +180,7 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             url: '/consultancy',
             onEnter: function ($rootScope) {
 
-                $rootScope.sidebarOptions = [];
+                //$rootScope.sidebarOptions = [];
                 $rootScope.option = 'consultancy';
 
             },
@@ -236,12 +252,12 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             onEnter: function ($rootScope) {
 
                 $rootScope.option = 'admin';
-                $rootScope.changeSidebarOptions([
+                // $rootScope.changeSidebarOptions([
 
-                    { link: 'admin.employee-list', display: 'danh sách nhân viên', isActive: false },
-                    // { link: 'employee.all', display: 'danh sách khách hàng', isActive: false },
+                //     { link: 'admin.employee-list', display: 'danh sách nhân viên', isActive: false },
+                //     // { link: 'employee.all', display: 'danh sách khách hàng', isActive: false },
 
-                ]);
+                // ]);
 
 
             },
@@ -257,7 +273,7 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             controller: 'adminEmployeeListCtrl',
             onEnter: function ($rootScope) {
 
-                $rootScope.sidebarOptions[0].isActive = true;
+              //  $rootScope.sidebarOptions[0].isActive = true;
 
             }
 
@@ -270,11 +286,11 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             controller: 'adminEmployeeDetailsCtrl',
             onEnter: function ($rootScope) {
 
-                angular.forEach($rootScope.sidebarOptions, function (item) {
+                // angular.forEach($rootScope.sidebarOptions, function (item) {
 
-                    item.isActive = false;
+                //     item.isActive = false;
 
-                })
+                // })
 
             },
             resolve: {
@@ -654,6 +670,7 @@ app.directive('jtable', function ($localStorage, $http, $rootScope) {
             createActionUrl: '=',
             updateActionUrl: '=',
             deleteActionUrl: '=',
+            attachedListData: '=',
             fields: '=',
             title: '@',
             instantLoad: '=',
@@ -672,7 +689,6 @@ app.directive('jtable', function ($localStorage, $http, $rootScope) {
                     recordsLoaded: function (event, data) {
                         $('.jtable-data-row').click(function () {
                             var row_id = $(this).attr('data-record-key');
-                            console.log(this);
                             scope.recordClick({ id: row_id });
                         });
                     },
@@ -680,12 +696,15 @@ app.directive('jtable', function ($localStorage, $http, $rootScope) {
                     actions: {
                         listAction: function (postData, params) {
 
+                            console.log(scope.attachedListData);
+                            var data = $.extend({}, postData, scope.attachedListData);
+                            console.log(data);
                             return $.Deferred(function ($dfd) {
 
                                 $.ajax({
                                     url: `${scope.listActionUrl}?jtStartIndex=${params.jtStartIndex}&jtPageSize=${params.jtPageSize}`,
                                     type: 'POST',
-                                    data: postData,
+                                    data: data,
                                     dataType: 'json',
                                     beforeSend: function (request) {
                                         request.setRequestHeader('token', $localStorage.auth.token);
