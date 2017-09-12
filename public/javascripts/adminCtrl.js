@@ -1,5 +1,10 @@
 app.controller('adminEmployeeListCtrl', function($scope, $http, $state, $stateParams, $rootScope) {
 
+    $scope.listActionUrl = '/employee/list';
+    $scope.createActionUrl = '/employee/add';
+    $scope.updateActionUrl = '/employee/update';
+    $scope.deleteActionUrl = '/employee/delete';
+    
     $scope.fields = {
 
         EmplID: {
@@ -76,7 +81,7 @@ app.controller('adminEmployeeDetailsCtrl', function($scope, $http, information) 
 
         {
 
-            CustomerID: {
+            employeeID: {
                 title: 'Khách hàng',
                 width: '25%'
 
@@ -110,7 +115,7 @@ app.controller('adminEmployeeDetailsCtrl', function($scope, $http, information) 
                 width: '25%'
             },
 
-            CustomerID: {
+            employeeID: {
                 title: 'Khách hàng',
                 width: '25%'
 

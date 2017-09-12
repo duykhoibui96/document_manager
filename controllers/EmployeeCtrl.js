@@ -1,4 +1,5 @@
 var employee = require('../models/Employee');
+var common = require('../models/common');
 
 var getRidOfKey = function (object) {
 
@@ -141,13 +142,7 @@ module.exports = {
                 res.json({ Result: 'ERROR', Message: err });
             } else {
 
-                res.json({
-
-                    Result: 'OK',
-                    TotalRecordCount: docs.length,
-                    Records: docs.slice(req.query.jtStartIndex).slice(0, req.query.jtPageSize)
-
-                })
+                common.filterList(docs,req,res);
             }
 
 

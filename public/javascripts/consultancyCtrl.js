@@ -1,4 +1,10 @@
-app.controller('consultancyListCtrl', function ($scope, $http, $rootScope) {
+app.controller('consultancyListCtrl', function ($scope, $http, $rootScope, $stateParams) {
+
+    var EmplID = $stateParams.EmplID ? $stateParams.EmplID : 'any';
+    $scope.listActionUrl = '/consultancy/list/' + EmplID + '/all';
+    $scope.createActionUrl = '/consultancy/add';
+    $scope.updateActionUrl = '/consultancy/update';
+    $scope.deleteActionUrl = '/consultancy/delete';
 
     $scope.fields = {
 

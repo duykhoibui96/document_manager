@@ -65,13 +65,13 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
         .state('employee', {
 
             url: '/employee',
-            onEnter: function ($rootScope) {
+            onEnter: function ($rootScope, $localStorage) {
 
                 $rootScope.option = 'employee';
                 $rootScope.changeSidebarOptions([
 
                     { link: 'employee.info', display: 'thông tin cá nhân', isActive: false },
-                    { link: 'employee.customer_list', display: 'quản lý khách hàng', isActive: false },
+                    { link: `employee.customer_list({ EmplID: ${$localStorage.auth.token}})`, display: 'quản lý khách hàng', isActive: false },
                     { link: 'employee.consulting', display: 'tư vấn', isActive: false },
                     { link: 'employee.consulted', display: 'được tư vấn', isActive: false },
                     { link: 'employee.study', display: 'nghiên cứu', isActive: false },
@@ -123,9 +123,9 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
         })
         .state('employee.customer_list', {
 
-            url: '/customer-list',
-            templateUrl: '/employees/customer_list.html',
-            controller: 'employeeCustomerListCtrl',
+            url: '/customer-list?EmplID',
+            templateUrl: '/customer/list.html',
+            controller: 'customerListCtrl',
             onEnter: function ($rootScope) {
 
                 var selectedIndex = 1;
@@ -653,13 +653,13 @@ app.directive('filterBox', function () {
                 }
 
                 scope.filterFunc({
-                    dateRange: [
+                    dateRange: {
 
-                        startDate,
-                        endDate
+                        startDate: startDate,
+                        endDate: endDate
 
 
-                    ]
+                    }
                 });
 
             };
@@ -741,10 +741,10 @@ app.directive('jtable', function ($localStorage, $http, $rootScope) {
 
             recordClick: '&',
             jtableId: '@',
-            listActionUrl: '@',
-            createActionUrl: '@',
-            updateActionUrl: '@',
-            deleteActionUrl: '@',
+            listActionUrl: '=',
+            createActionUrl: '=',
+            updateActionUrl: '=',
+            deleteActionUrl: '=',
             fields: '=',
             title: '@',
             instantLoad: '=',
@@ -771,14 +771,12 @@ app.directive('jtable', function ($localStorage, $http, $rootScope) {
                     actions: {
                         listAction: function (postData, params) {
 
-                            var dateRange = postData ? postData.dateRange : undefined;
-                            console.log(dateRange);
                             return $.Deferred(function ($dfd) {
 
-
                                 $.ajax({
-                                    url: `${scope.listActionUrl}?jtStartIndex=${params.jtStartIndex}&jtPageSize=${params.jtPageSize}&dateRange=${dateRange}`,
-                                    type: 'GET',
+                                    url: `${scope.listActionUrl}?jtStartIndex=${params.jtStartIndex}&jtPageSize=${params.jtPageSize}`,
+                                    type: 'POST',
+                                    data: postData,
                                     dataType: 'json',
                                     beforeSend: function (request) {
                                         request.setRequestHeader('token', $localStorage.auth.token);
@@ -884,7 +882,7 @@ app.directive('jtable', function ($localStorage, $http, $rootScope) {
 
                 $rootScope.$on('filter', function (event, object) {
 
-                    $(selector).jtable('load', { dateRange: object });
+                    $(selector).jtable('load', object);
 
                 })
 

@@ -12,8 +12,8 @@ var accounts = require('./routes/accounts');
 var customer = require('./routes/customer');
 var consultancy = require('./routes/consultancy');
 
-//mongoose.connect(`mongodb://localhost/document_manager`);
-mongoose.connect('mongodb://buiduykhoi:buiduykhoi@ds149763.mlab.com:49763/document_manager');
+mongoose.connect(`mongodb://localhost/document_manager`);
+// mongoose.connect('mongodb://buiduykhoi:buiduykhoi@ds149763.mlab.com:49763/document_manager');
 
 var app = express();
 

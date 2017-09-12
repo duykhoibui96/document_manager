@@ -1,4 +1,5 @@
 var consultancy = require('../models/Consultancy');
+var common = require('../models/common');
 
 var getRidOfKey = function (object) {
 
@@ -9,49 +10,83 @@ var getRidOfKey = function (object) {
 
 module.exports = {
 
-    list: function (req, res) {
+    listByEmployee: function (req, res) {
 
-        var dateRange = req.query.dateRange;
-        consultancy.find(function (err, docs) {
+        var filterObj = {};
+        var id = req.params.id === 'current' ? req.id : req.params.id;
+
+        switch (req.params.mode) {
+            case 'consulting':
+                filterObj = {
+
+                    ConsultingEmplID: id
+
+                }
+                break;
+
+            case 'consulted':
+                filterObj = {
+
+                    ConsultedEmplID: id``
+
+                }
+                break;
+
+
+
+        }
+
+
+        consultancy.find(filterObj, function (err, docs) {
 
             if (err) {
                 console.log(err);
                 res.json({ Result: 'ERROR', Message: err });
             } else {
 
-                var retList = [];
-                if (dateRange !== 'undefined') {
+                common.filterList(docs, req, res);
+            }
 
-                    var dateRangeList = dateRange.split(',');
-                    console.log(dateRangeList);
-                    var newStartDate = new Date(dateRangeList[0]);
-                    var newEndDate = new Date(dateRangeList[1]);
-                    newStartDate.setHours(0,0,0,0);
-                    newEndDate.setHours(0,0,0,0);
-                    console.log(newStartDate);
-                    console.log(newEndDate);
-                    console.log('----');
-                    for (var i = 0; i < docs.length; i++) {
-                        var date = new Date(docs[i].Time);
-                        date.setDate(date.getDate() + 1);
-                        date.setHours(0,0,0,0);
-                        console.log(date);
-                        if (date >= newStartDate && date <= newEndDate)
-                            retList.push(docs[i]);
+
+        })
+    },
+    list: function (req, res) {
+
+        var EmplID = Number(req.params.id);
+        var mode = req.params.mode;
+        var filterObj = {};
+
+        if (!isNaN(EmplID)) {
+            switch (mode) {
+
+                case 'consulting':
+                    filterObj = {
+
+                        ConsultingEmplID: EmplID
+
                     }
+                    break;
 
-                }
-                else
-                     retList = docs;
+                case 'consulted':
+                    filterObj = {
 
+                        ConsultedEmplID: EmplID
 
-                res.json({
+                    }
+                    break;
 
-                    Result: 'OK',
-                    TotalRecordCount: retList.length,
-                    Records: retList.slice(req.query.jtStartIndex).slice(0, req.query.jtPageSize)
+            }
+        }
 
-                })
+        consultancy.find(filterObj,function (err, docs) {
+
+            if (err) {
+                console.log(err);
+                res.json({ Result: 'ERROR', Message: err });
+            } else {
+
+                common.filterList(docs, req, res);
+
             }
 
 

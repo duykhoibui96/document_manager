@@ -1,4 +1,5 @@
 var customer = require('../models/Customer');
+var common = require('../models/common');
 
 var getRidOfKey = function (object) {
 
@@ -73,22 +74,28 @@ module.exports = {
 
     list: function (req, res) {
 
+        console.log('Hello');
+        var filterObj = {};
 
-        customer.find(function (err, docs) {
+        var EmplID = Number(req.params.id);
+        console.log(EmplID);
+        if (!isNaN(EmplID))
+            filterObj = {
+                
+                ResponsibleEmpl: { '$in': [`${EmplID}`] }
+                 
+            };
+        
+        console.log(filterObj);
+
+        customer.find(filterObj,function (err, docs) {
 
             if (err) {
                 console.log(err);
                 res.json({ Result: 'ERROR', Message: err });
             } else {
 
-                console.log(docs);
-                res.json({
-
-                    Result: 'OK',
-                    TotalRecordCount: docs.length,
-                    Records: docs.slice(req.query.jtStartIndex).slice(0, req.query.jtPageSize)
-
-                })
+                common.filterList(docs,req,res);
             }
 
 
@@ -145,35 +152,6 @@ module.exports = {
         })
 
 
-    },
-
-    listByEmployee: function (req, res) {
-
-        customer.find({ ResponsibleEmpl: { '$in': [`${req.id}`] } }, function (err, docs) {
-
-            if (err) {
-                console.log(err);
-                res.json({ Result: 'ERROR', Message: err });
-            } else {
-
-                res.json({
-
-                    Result: 'OK',
-                    TotalRecordCount: docs.length,
-                    Records: docs.slice(req.query.jtStartIndex).slice(0, req.query.jtPageSize)
-
-                })
-            }
-
-
-        })
-
-
-
-
     }
-
-
-
 
 }

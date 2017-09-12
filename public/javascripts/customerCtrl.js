@@ -1,6 +1,18 @@
-app.controller('customerListCtrl', function ($scope, $http) {
+app.controller('customerListCtrl', function ($scope, $http, $stateParams) {
 
     $scope.listType = 'all';
+
+    $scope.EmplID = $stateParams.EmplID ? $stateParams.EmplID : 'any';
+    $scope.listActionUrl = '/customer/list/' + $scope.EmplID;
+
+    if (!$stateParams.EmplID) {
+
+        $scope.createActionUrl = '/customer/add';
+        $scope.updateActionUrl = '/customer/update';
+        $scope.deleteActionUrl = '/customer/delete';
+
+    }
+
 
     $scope.types = [
 
