@@ -3,14 +3,14 @@ app.controller('consultancyListCtrl', function ($scope, $http, $rootScope, $stat
     var EmplID = 'any';
     $scope.mode = 'all';
     $scope.isInAdminMode = false;
-    console.log($state.current);
+
     switch ($state.current.name) {
         case 'consultancy.list':
             EmplID = $localStorage.auth.token;
             $scope.mode = $stateParams.mode ? $stateParams.mode : 'consulting';
             break;
 
-        case 'consultancy.admin-list':
+        default:
             if ($stateParams.EmplID)
                 EmplID = $stateParams.EmplID;
             $scope.isInAdminMode = true;
@@ -32,7 +32,7 @@ app.controller('consultancyListCtrl', function ($scope, $http, $rootScope, $stat
             list: true,
             create: true,
             edit: true,
-            input: function(data) {
+            input: function (data) {
                 if (data.record) {
                     return '<input type="text" name="ConsID" readonly value="' + data.record.ConsID + '"/>';
                 } else {
@@ -71,7 +71,7 @@ app.controller('consultancyListCtrl', function ($scope, $http, $rootScope, $stat
         Time: {
             title: 'Thời gian',
             width: '10%',
-            display: function(data) {
+            display: function (data) {
 
                 return new Date(data.record.Time).toLocaleDateString();
 
@@ -82,7 +82,7 @@ app.controller('consultancyListCtrl', function ($scope, $http, $rootScope, $stat
 
     };
 
-    $scope.filter = function(object) {
+    $scope.filter = function (object) {
 
         console.log(object);
         $rootScope.$emit('filter', object);
