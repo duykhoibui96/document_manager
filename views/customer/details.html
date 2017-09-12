@@ -1,11 +1,10 @@
 <div class="title title-icon-details">
-    chi tiết khách hàng
+    thông tin khách hàng
     <div class="pull-right" style="padding: 5px 13px; position: relative; top: -5px; border-radius: 50%; background: linear-gradient(to bottom, gray, #2c3e50)">
         <a ui-sref="customer.list"><span class="fa fa-arrow-left" style="color: white"></span></a>
     </div>
 </div>
 <hr>
-<h3 style="padding-left: 30px; font-weight: bold; color: blue">Thông tin</h3>
 <div class="container">
     <div class="row">
         <div class="col-sm-3 col-xs-12">
@@ -51,6 +50,4 @@
         </div>
     </div>
 </div>
-<jtable jtable-id="employee-jtable" fields="fields" title="Danh sách nhân viên quản lý" list-action-url="listActionUrl" create-action-url="createActionUrl" attached-list-data="attachedData" instant-load="true"></jtable>
-<hr>
-<h3 style="padding-left: 30px; font-weight: bold; color: blue">Lược sử hoạt động</h3>
+<jtable jtable-id="employee-jtable" fields="fields" title="Danh sách nhân viên quản lý" list-action-url="listActionUrl" create-action-url="createActionUrl" delete-action-url="deleteActionUrl" attached-list-data="attachedData" instant-load="true"></jtable>

@@ -63,7 +63,7 @@ app.controller('adminEmployeeListCtrl', function($scope, $http, $state, $statePa
 
 app.controller('adminEmployeeDetailsCtrl', function($scope, $http, information) {
 
-    $scope.mainInfo = information.data;
+    $scope.mainInfo = information.Record;
 
     $scope.listType = 'consulting';
 

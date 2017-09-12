@@ -696,7 +696,7 @@ app.directive('jtable', function ($localStorage, $http, $rootScope) {
                     actions: {
                         listAction: function (postData, params) {
 
-                            console.log(scope.attachedListData);
+                            //console.log(scope.attachedListData);
                             var data = $.extend({}, postData, scope.attachedListData);
                             console.log(data);
                             return $.Deferred(function ($dfd) {

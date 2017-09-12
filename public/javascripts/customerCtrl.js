@@ -129,7 +129,8 @@ app.controller('customerDetailsCtrl', function ($scope, information) {
         
     };
     $scope.listActionUrl = '/employee/list';
-    $scope.createActionUrl = '/customer/add';
+    $scope.createActionUrl = '/customer/add?CustomerID=' + $scope.mainInfo.CustomerID;
+    $scope.deleteActionUrl = '/customer/delete?CustomerID=' + $scope.mainInfo.CustomerID;
 
     $scope.fields = {
 

@@ -73,6 +73,31 @@ module.exports = {
 
         if (emplID) {
 
+            var customerID = req.query.CustomerID;
+            customer.update({ CustomerID: customerID }, { $push: { ResponsibleEmpl: emplID } }, function (err, doc) {
+
+                if (err) {
+                    console.log(err);
+                    res.json({
+
+                        Result: 'ERROR',
+                        Message: 'Database Error'
+
+                    })
+                } else {
+                    res.json({
+
+                        Result: 'OK',
+                        Record: doc
+
+
+                    })
+
+                }
+
+
+            })
+
         }
         else {
             var newCustomer = new customer(req.body);
@@ -170,21 +195,52 @@ module.exports = {
 
     delete: function (req, res) {
 
-        customer.remove(req.body, function (err) {
+        var customerID = req.query.CustomerID;
 
-            if (err)
-                console.log(err);
+        if (customerID) {
 
-            res.json({
+            customer.update({ CustomerID: customerID }, { $pop: { ResponsibleEmpl: req.body.EmplID } }, function (err, doc) {
 
-                Result: err ? 'ERROR' : 'OK',
-                Message: 'Database Error'
+                if (err) {
+                    console.log(err);
+                    res.json({
+
+                        Result: 'ERROR',
+                        Message: 'Database Error'
+
+                    })
+                } else {
+                    res.json({
+
+                        Result: 'OK',
+                        Record: doc
+
+
+                    })
+
+                }
 
 
             })
 
 
-        })
+        }
+        else
+            customer.remove(req.body, function (err) {
+
+                if (err)
+                    console.log(err);
+
+                res.json({
+
+                    Result: err ? 'ERROR' : 'OK',
+                    Message: 'Database Error'
+
+
+                })
+
+
+            })
 
 
     }

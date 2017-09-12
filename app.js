@@ -12,14 +12,13 @@ var accounts = require('./routes/accounts');
 var customer = require('./routes/customer');
 var consultancy = require('./routes/consultancy');
 
-mongoose.connect(`mongodb://localhost/document_manager`);
-// mongoose.connect('mongodb://buiduykhoi:buiduykhoi@ds149763.mlab.com:49763/document_manager');
+//mongoose.connect(`mongodb://localhost/document_manager`);
+mongoose.connect('mongodb://buiduykhoi:buiduykhoi@ds149763.mlab.com:49763/document_manager');
 
 var app = express();
 
 // view setup
 app.use(express.static(path.join(__dirname, 'views')));
-
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
