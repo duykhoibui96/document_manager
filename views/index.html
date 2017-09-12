@@ -68,8 +68,8 @@
                         <ul class="nav navbar-nav">
                             <li class="main-select" ng-class="{ active: option == 'employee'}"><a ui-sref="employee">Thông tin cá nhân</a></li>
                             <li class="main-select" ng-class="{ active: option == 'customer'}"><a ui-sref="customer">Khách hàng</a></li>
-                            <li class="main-select" ng-class="{ active: option == 'consultancy'}"><a ui-sref="consultancy">Tư vấn</a></li>
-                            <li class="main-select" ng-class="{ active: option == 'admin'}"><a ui-sref="admin">Quản lý</a></li>
+                            <li class="main-select" ng-class="{ active: option == 'consultancy'}"><a ui-sref="consultancy.list({ mode: 'consulting' })">Tư vấn</a></li>
+                            <li class="main-select" ng-class="{ active: option == 'admin'}"><a ui-sref="admin">Quản lý nhân viên</a></li>
                             <!-- <li class="main-select" ng-class="{ active: option == 'study'}"><a ui-sref="study">Nghiên cứu</a></li> -->
                         </ul>
                         <ul class="nav navbar-nav navbar-right">

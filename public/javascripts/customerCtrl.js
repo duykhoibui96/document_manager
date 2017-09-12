@@ -1,18 +1,25 @@
-app.controller('customerListCtrl', function ($scope, $http, $stateParams) {
+app.controller('customerListCtrl', function ($scope, $http, $stateParams, $state, $localStorage) {
 
     $scope.listType = 'all';
+    var EmplID = 'any';
+    $scope.isInAdminMode = false;
+    console.log($state.current);
+    switch ($state.current.name) {
+        case 'customer.list':
+            EmplID = $localStorage.auth.token;
+            break;
 
-    $scope.EmplID = $stateParams.EmplID ? $stateParams.EmplID : 'any';
-    $scope.listActionUrl = '/customer/list/' + $scope.EmplID;
-
-    if (!$stateParams.EmplID) {
-
-        $scope.createActionUrl = '/customer/add';
-        $scope.updateActionUrl = '/customer/update';
-        $scope.deleteActionUrl = '/customer/delete';
+        case 'customer.admin-list':
+            if ($stateParams.EmplID)
+                EmplID = $stateParams.EmplID;
+            $scope.createActionUrl = '/customer/add';
+            $scope.updateActionUrl = '/customer/update';
+            $scope.deleteActionUrl = '/customer/delete';
+            $scope.isInAdminMode = true;
 
     }
 
+    $scope.listActionUrl = '/customer/list/' + EmplID;
 
     $scope.types = [
 

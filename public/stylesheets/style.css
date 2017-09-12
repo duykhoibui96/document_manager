@@ -284,6 +284,7 @@ hr {
     color: white;
 }
 
+
 .main-select:hover,
 .main-select:focus,
 .main-select.active,
@@ -451,6 +452,11 @@ jtable select {
     background: #0D6C02;
 }
 
+.view::after {
+
+    content: "\f06e";
+
+}
 
 .signin::after {
     content: "\f090";

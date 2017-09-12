@@ -10,46 +10,6 @@ var getRidOfKey = function (object) {
 
 module.exports = {
 
-    listByEmployee: function (req, res) {
-
-        var filterObj = {};
-        var id = req.params.id === 'current' ? req.id : req.params.id;
-
-        switch (req.params.mode) {
-            case 'consulting':
-                filterObj = {
-
-                    ConsultingEmplID: id
-
-                }
-                break;
-
-            case 'consulted':
-                filterObj = {
-
-                    ConsultedEmplID: id``
-
-                }
-                break;
-
-
-
-        }
-
-
-        consultancy.find(filterObj, function (err, docs) {
-
-            if (err) {
-                console.log(err);
-                res.json({ Result: 'ERROR', Message: err });
-            } else {
-
-                common.filterList(docs, req, res);
-            }
-
-
-        })
-    },
     list: function (req, res) {
 
         var EmplID = Number(req.params.id);

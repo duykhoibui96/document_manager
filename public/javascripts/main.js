@@ -68,16 +68,16 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             onEnter: function ($rootScope, $localStorage) {
 
                 $rootScope.option = 'employee';
-                $rootScope.changeSidebarOptions([
+                // $rootScope.changeSidebarOptions([
 
-                    { link: 'employee.info', display: 'thông tin cá nhân', isActive: false },
-                    { link: `employee.customer_list({ EmplID: ${$localStorage.auth.token}})`, display: 'quản lý khách hàng', isActive: false },
-                    { link: 'employee.consulting', display: 'tư vấn', isActive: false },
-                    { link: 'employee.consulted', display: 'được tư vấn', isActive: false },
-                    { link: 'employee.study', display: 'nghiên cứu', isActive: false },
-                    { link: 'employee.instruct', display: 'hướng dẫn', isActive: false }
+                //     { link: 'employee.info', display: 'thông tin cá nhân', isActive: false },
+                //     { link: `employee.customer_list({ EmplID: ${$localStorage.auth.token}})`, display: 'quản lý khách hàng', isActive: false },
+                //     { link: 'employee.consulting', display: 'tư vấn', isActive: false },
+                //     { link: 'employee.consulted', display: 'được tư vấn', isActive: false },
+                //     { link: 'employee.study', display: 'nghiên cứu', isActive: false },
+                //     { link: 'employee.instruct', display: 'hướng dẫn', isActive: false }
 
-                ]);
+                // ]);
 
             },
             defaultSubstate: 'employee.info'
@@ -121,120 +121,6 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
 
 
         })
-        .state('employee.customer_list', {
-
-            url: '/customer-list?EmplID',
-            templateUrl: '/customer/list.html',
-            controller: 'customerListCtrl',
-            onEnter: function ($rootScope) {
-
-                var selectedIndex = 1;
-                angular.forEach($rootScope.sidebarOptions, function (item, index) {
-
-                    if (index === selectedIndex)
-                        item.isActive = true;
-                    else
-                        item.isActive = false;
-
-
-                });
-
-
-            }
-
-
-        })
-        .state('employee.consulting', {
-
-            url: '/consulting',
-            templateUrl: '/employees/consulting.html',
-            controller: 'employeeConsultingCtrl',
-            onEnter: function ($rootScope) {
-
-                var selectedIndex = 2;
-                angular.forEach($rootScope.sidebarOptions, function (item, index) {
-
-                    if (index === selectedIndex)
-                        item.isActive = true;
-                    else
-                        item.isActive = false;
-
-
-                });
-
-
-            }
-
-
-
-        })
-        .state('employee.consulted', {
-
-            url: '/consulted',
-            templateUrl: '/employees/consulted.html',
-            onEnter: function ($rootScope) {
-
-                var selectedIndex = 3;
-                angular.forEach($rootScope.sidebarOptions, function (item, index) {
-
-                    if (index === selectedIndex)
-                        item.isActive = true;
-                    else
-                        item.isActive = false;
-
-
-                });
-
-
-            }
-
-
-        })
-        .state('employee.study', {
-
-            url: '/study',
-            templateUrl: '/employees/study.html',
-            onEnter: function ($rootScope) {
-
-                var selectedIndex = 4;
-                angular.forEach($rootScope.sidebarOptions, function (item, index) {
-
-                    if (index === selectedIndex)
-                        item.isActive = true;
-                    else
-                        item.isActive = false;
-
-
-                });
-
-
-            }
-
-
-        })
-        .state('employee.instruct', {
-
-            url: '/instruct',
-            templateUrl: '/employees/study.html',
-            onEnter: function ($rootScope) {
-
-                var selectedIndex = 5;
-                angular.forEach($rootScope.sidebarOptions, function (item, index) {
-
-                    if (index === selectedIndex)
-                        item.isActive = true;
-                    else
-                        item.isActive = false;
-
-
-                });
-
-
-            }
-
-
-        })
-
         .state('customer', {
 
             url: '/customer',
@@ -254,6 +140,14 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             templateUrl: 'customer/list.html',
             controller: 'customerListCtrl'
 
+
+
+        })
+        .state('customer.admin-list', {
+
+            url: '/admin/list?EmplID',
+            templateUrl: 'customer/list.html',
+            controller: 'customerListCtrl'
 
 
         })
@@ -280,10 +174,24 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
         })
         .state('consultancy.list', {
 
-            url: '/list',
+            url: '/list?mode',
+            templateUrl: 'consultancy/list.html',
+            controller: 'consultancyListCtrl',
+            onEnter: function($stateParams) {
+
+                if (!$stateParams.mode)
+                    $stateParams.mode = 'consulting';
+
+            }
+
+
+
+        })
+        .state('consultancy.admin-list', {
+
+            url: '/admin/list?EmplID',
             templateUrl: 'consultancy/list.html',
             controller: 'consultancyListCtrl'
-
 
 
         })
@@ -481,6 +389,7 @@ app.run(function ($rootScope, $timeout, $mdDialog, $localStorage, $transitions, 
 
     })
 
+    $rootScope.isAdmin = true;
     $rootScope.SERVER_ERR = 'Lỗi server, vui lòng thử lại sau!';
     $rootScope.DTB_ERR = 'Lỗi trong cơ sở dữ liệu, vui lòng thử lại sau!';
     $rootScope.UPDATE_SUCCESS = 'Cập nhật thành công';
@@ -643,7 +552,7 @@ app.directive('filterBox', function () {
                 var startDate = new Date(scope.startDate);
                 var endDate = new Date(scope.endDate);
 
-                if (scope.mode !== 'optional'){
+                if (scope.mode !== 'optional') {
 
                     startDate = new Date();
                     endDate = new Date();

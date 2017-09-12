@@ -1,7 +1,23 @@
-app.controller('consultancyListCtrl', function ($scope, $http, $rootScope, $stateParams) {
+app.controller('consultancyListCtrl', function ($scope, $http, $rootScope, $stateParams, $localStorage, $state) {
 
-    var EmplID = $stateParams.EmplID ? $stateParams.EmplID : 'any';
-    $scope.listActionUrl = '/consultancy/list/' + EmplID + '/all';
+    var EmplID = 'any';
+    $scope.mode = 'all';
+    $scope.isInAdminMode = false;
+    console.log($state.current);
+    switch ($state.current.name) {
+        case 'consultancy.list':
+            EmplID = $localStorage.auth.token;
+            $scope.mode = $stateParams.mode ? $stateParams.mode : 'consulting';
+            break;
+
+        case 'consultancy.admin-list':
+            if ($stateParams.EmplID)
+                EmplID = $stateParams.EmplID;
+            $scope.isInAdminMode = true;
+
+    }
+
+    $scope.listActionUrl = '/consultancy/list/' + EmplID + '/' + $scope.mode;
     $scope.createActionUrl = '/consultancy/add';
     $scope.updateActionUrl = '/consultancy/update';
     $scope.deleteActionUrl = '/consultancy/delete';
@@ -30,7 +46,7 @@ app.controller('consultancyListCtrl', function ($scope, $http, $rootScope, $stat
         ConsultingEmplID: {
             title: 'Nhân viên tư vấn',
             width: '20%',
-            options: '/employee/all-id'
+            options: $scope.mode === 'consulting' ? '/employee/get/' + $localStorage.auth.token : '/employee/all-id'
         },
         CustomerID: {
             title: 'Khách hàng',
@@ -42,7 +58,7 @@ app.controller('consultancyListCtrl', function ($scope, $http, $rootScope, $stat
         ConsultedEmplID: {
             title: 'Nhân viên được tư vấn',
             width: '20%',
-            options: '/employee/all-id'
+            options: $scope.mode === 'consulted' ? '/employee/get/' + $localStorage.auth.token : '/employee/all-id'
         },
 
         Document: {
