@@ -6,19 +6,19 @@ module.exports = {
 
         var data = req.body;
 
-        account.findOne(data, function (err, doc) {
+        account.findOne(data).select('EmplID Username').exec(function(err, doc){
 
             if (err) {
                 console.log(err);
-                res.json({ ret: -1 });
+                res.json({ Result: 'ERROR' , Message: 'Database error'});
             } else {
                 if (doc == null)
-                    res.json({ ret: 0 });
+                    res.json({ Result: 'ERROR', Message: 'Invalid username or password' });
                 else {
                     res.json({
 
-                        ret: 1,
-                        token: doc.EmplID
+                        Result: 'OK',
+                        Record: doc
 
                     });
                 }
@@ -28,7 +28,7 @@ module.exports = {
 
     },
 
-    updateInfo: function (req, res) {
+    update: function (req, res) {
 
         var data = req.body;
         var id = req.id;

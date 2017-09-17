@@ -1,217 +1,49 @@
-var employee = require('../models/Employee');
-var customer = require('../models/Customer');
+var Employee = require('../models/Employee');
 var common = require('../models/common');
-
-var getRidOfKey = function (object) {
-
-    delete object.EmplID;
-    return object;
-
-}
-
-
-
-var loadInfo = function (id, res) {
-
-    employee.findOne({ EmplID: id }, function (err, doc) {
-
-        if (err) {
-            console.log(err);
-            res.json({ Result: 'ERROR' });
-        } else {
-
-            res.json({
-
-                Result: 'OK',
-                Record: doc
-
-            });
-        }
-
-    });
-
-}
-
 
 module.exports = {
 
     get: function (req, res) {
 
-        var id = req.query.id ? req.query.id : req.id;
+        Employee.findOne({ EmplID: req.params.id }, function (err, doc) {
 
-        loadInfo(id, res);
+            common.forDetails(err, doc, res);
+
+        })
 
     },
 
-    get_reduced: function (req, res) {
+    listForOptions: function (req, res) {
 
-        var id = req.params.id;
+        var selectedObj = req.query.selected;
+        Employee.find().select(selectedObj).exec(function (err, docs) {
 
-        employee.findOne({ EmplID: id }).select('EmplID Name').exec(function (err, doc) {
-
-            if (err) {
-                console.log(err);
-                res.json({
-
-                    Result: 'ERROR',
-                    Message: 'Database error'
-
-                });
-            }
-            else {
-                var result = [];
-                result.push({
-
-                    DisplayText: `${doc.EmplID} - ${doc.Name}`,
-                    Value: doc.EmplID
-
-
-                });
-                res.json({
-
-                    Result: 'OK',
-                    Options: result
-
-
-                })
-            }
+            common.forOptions(err, docs, 'EmplID', 'EmplID Name', res);
 
 
         });
 
     },
 
-    change: function (req, res) {
-
-        employee.update({ EmplID: req.id }, { $set: req.body }, function (err, docs) {
-
-            if (err) {
-                console.log(err);
-                res.json({ Result: 'ERROR' });
-            } else
-                loadInfo(req.id, res);
-
-
-        })
-
-
-    },
-
-    listAllID: function (req, res) {
-
-        employee.find().select('EmplID Name').exec(function (err, docs) {
-
-            if (err) {
-                console.log(err);
-                res.json({ Result: 'ERROR', Message: err });
-            } else {
-
-                var options = [];
-                for (var i = 0; i < docs.length; i++)
-                    options[i] = {
-
-                        DisplayText: `${docs[i].EmplID} - ${docs[i].Name}`,
-                        Value: docs[i].EmplID
-
-
-                    }
-                res.json({
-
-                    Result: 'OK',
-                    Options: options
-
-                })
-            }
-
-
-        })
-
-    },
-
 
     list: function (req, res) {
 
-        var customerID = req.body.CustomerID;
-        var filterObj = {};
 
-        if (customerID) {
+        Employee.find().exec(function (err, docs) {
 
-            customer.findOne({ CustomerID: customerID }, function (err, doc) {
+            common.forList(err, docs, req, res);
 
-                if (err || doc == null) {
-                    console.log(err);
-                    res.json({ Result: 'ERROR', Message: err });
-                } else {
-
-                    var idList = doc.ResponsibleEmpl;
-                    filterObj = {
-
-                        EmplID: { $in: idList }
-
-                    };
-                    employee.find(filterObj, function (err, docs) {
-
-                        if (err) {
-                            console.log(err);
-                            res.json({ Result: 'ERROR', Message: err });
-                        } else {
-
-                            common.filterList(docs, req, res);
-                        }
-
-
-                    })
-
-                }
-
-
-
-            })
-
-        }
-        else
-
-            employee.find(filterObj, function (err, docs) {
-
-                if (err) {
-                    console.log(err);
-                    res.json({ Result: 'ERROR', Message: err });
-                } else {
-
-                    common.filterList(docs, req, res);
-                }
-
-
-            })
-
+        })
 
     },
 
-    add: function (req, res) {
+    create: function (req, res) {
 
-        var newEmployee = new employee(req.body)
+        var newEmployee = new Employee(req.body);
 
         newEmployee.save(function (err, doc) {
 
-            if (err) {
-                console.log(err);
-                res.json({
-
-                    Result: 'ERROR',
-                    Message: 'Database Error'
-
-                })
-            } else {
-                res.json({
-
-                    Result: 'OK',
-                    Record: doc
-
-
-                })
-
-            }
-
+            common.forDetails(err, doc, res);
 
         })
 
@@ -220,53 +52,29 @@ module.exports = {
 
     update: function (req, res) {
 
-        employee.update(req.body.EmplID, getRidOfKey(req.body), function (err, doc) {
+        var idObj = req.query ? req.query : {
 
-            if (err) {
-                console.log(err);
-                res.json({
+            EmplID: req.id
 
-                    Result: 'ERROR',
-                    Message: 'Database Error'
+        };
 
-                })
-            } else {
-                res.json({
+        Employee.findOneAndUpdate(idObj, req.body, { new: true }, function (err, doc) {
 
-                    Result: 'OK',
-                    Record: doc
-
-
-                })
-
-            }
-
-
+            common.forDetails(err, doc, res);
 
         })
-
 
     },
 
     delete: function (req, res) {
 
-        employee.remove(req.body, function (err) {
+        Employee.remove(req.body, function (err, doc) {
 
-            if (err)
-                console.log(err);
-
-            res.json({
-
-                Result: err ? 'ERROR' : 'OK',
-                Message: 'Database Error'
-
-
-            })
-
+            common.forDelete(err, doc, res);
 
         })
 
-
     }
+
 
 }

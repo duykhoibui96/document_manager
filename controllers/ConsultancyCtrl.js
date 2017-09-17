@@ -1,140 +1,116 @@
-var consultancy = require('../models/Consultancy');
+var Consultancy = require('../models/Consultancy');
 var common = require('../models/common');
 
-var getRidOfKey = function (object) {
 
-    delete object.ConsID;
-    return object;
-
-}
 
 module.exports = {
 
-    list: function (req, res) {
+    get: function (req, res) {
 
-        var EmplID = Number(req.params.id);
-        var mode = req.params.mode;
-        var filterObj = {};
+        Consultancy.findOne({ ConsID: req.params.id }, function (err, doc) {
 
-        if (!isNaN(EmplID)) {
-            switch (mode) {
-
-                case 'consulting':
-                    filterObj = {
-
-                        ConsultingEmplID: EmplID
-
-                    }
-                    break;
-
-                case 'consulted':
-                    filterObj = {
-
-                        ConsultedEmplID: EmplID
-
-                    }
-                    break;
-
-            }
-        }
-
-        consultancy.find(filterObj,function (err, docs) {
-
-            if (err) {
-                console.log(err);
-                res.json({ Result: 'ERROR', Message: err });
-            } else {
-
-                common.filterList(docs, req, res);
-
-            }
-
+            common.forDetails(err, doc, res);
 
         })
-
 
     },
 
-    add: function (req, res) {
 
-        var newconsultancy = new consultancy(req.body);
+    list: function (req, res) {
 
-        newconsultancy.save(function (err, doc) {
+        var searchObj = {};
 
-            if (err) {
-                console.log(err);
-                res.json({
+        if (req.query.CustomerID)
+            searchObj = {
 
-                    Result: 'ERROR',
-                    Message: 'Database Error'
+                CustomerID: req.query.CustomerID
 
-                })
-            } else {
-                res.json({
+            }
+        else if (req.query.ConsultingEmplID)
+            searchObj = {
 
-                    Result: 'OK',
-                    Record: doc
+                ConsultingEmplID: req.query.ConsultingEmplID
 
+            }
+        else if (req.query.ConsultedEmplID)
+            searchObj = {
 
-                })
+                ConsultedEmplID: req.query.ConsultedEmplID
 
             }
 
 
+        Consultancy.find(searchObj).exec(function (err, docs) {
+
+            common.forList(err, docs, req, res);
+
         })
+
+    },
+
+    create: function (req, res) {
+
+        if (req.files) 
+        {
+            var files= req.files;
+            var ConsID = req.query.ConsID;
+            for(var i = 0; i<files.length; i++)
+                files[i].time = Date.now();
+
+            Consultancy.findOneAndUpdate({ ConsID: ConsID }, { $pushAll: { Document: req.files }},{ new: true }, function(err,doc){
+
+                common.forDetails(err,doc,res);
+
+            })
+
+        }
+        else {
+            var newConsultancy = new Consultancy(req.body);
+
+            newConsultancy.save(function (err, doc) {
+
+                common.forDetails(err, doc, res);
+
+            })
+        }
 
 
     },
 
     update: function (req, res) {
 
-        consultancy.update(req.body.EmplID, getRidOfKey(req.body), function (err, doc) {
+        var idObj = req.query ? req.query : {
 
-            if (err) {
-                console.log(err);
-                res.json({
+            ConsID: req.id
 
-                    Result: 'ERROR',
-                    Message: 'Database Error'
+        };
 
-                })
-            } else {
-                res.json({
+        var updateObj = req.body;
 
-                    Result: 'OK',
-                    Record: doc
+        if (req.body.time)
+            updateObj= {
 
-
-                })
+                $pop: { Document: req.body }
 
             }
 
+        Consultancy.findOneAndUpdate(idObj, updateObj, { new: true }, function (err, doc) {
 
+            common.forDetails(err, doc, res);
 
         })
-
 
     },
 
     delete: function (req, res) {
 
-        consultancy.remove(req.body, function (err) {
+        Consultancy.remove(req.body, function (err, doc) {
 
-            if (err)
-                console.log(err);
-
-            res.json({
-
-                Result: err ? 'ERROR' : 'OK',
-                Message: 'Database Error'
-
-
-            })
-
+            common.forDelete(err, doc, res);
 
         })
 
-
     }
+
 
 }

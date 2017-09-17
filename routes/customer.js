@@ -3,11 +3,11 @@ var api = require('../controllers/CustomerCtrl');
 var checkAuth = require('../models/checkAuth');
 var router = express.Router();
 
-router.post('/list/:id', checkAuth.forJtable, api.list);
-router.get('/get/:id', checkAuth.forAngular, api.get);
-router.post('/all-id', api.listAllID);
-router.post('/add', checkAuth.forJtable, api.add);
-router.put('/update', checkAuth.forJtable, api.update);
-router.delete('/delete', checkAuth.forJtable, api.delete);
+router.get('/details/:id',checkAuth.commonReq, api.get);
+router.post('/options',api.listForOptions);
+router.get('/',checkAuth.jtableReq,api.list);
+router.post('/',checkAuth.jtableReq,api.create);
+router.put('/',checkAuth.jtableReq,api.update);
+router.delete('/',checkAuth.jtableReq,api.delete);
 
 module.exports = router;

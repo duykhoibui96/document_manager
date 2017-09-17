@@ -1,91 +1,176 @@
-app.controller('consultancyListCtrl', function ($scope, $http, $rootScope, $stateParams, $localStorage, $state) {
+app.controller('consultancyListCtrl', function ($scope, $state) {
 
-    var EmplID = 'any';
-    $scope.mode = 'all';
-    $scope.isInAdminMode = false;
+    $scope.title = 'danh sách tư vấn';
+    $scope.listActionUrl = '/consultancy';
+    $scope.createActionUrl = '/consultancy';
+    $scope.updateActionUrl = '/consultancy';
+    $scope.deleteActionUrl = '/consultancy';
 
-    switch ($state.current.name) {
-        case 'consultancy.list':
-            EmplID = $localStorage.auth.token;
-            $scope.mode = $stateParams.mode ? $stateParams.mode : 'consulting';
-            break;
+    $scope.formCreatedCallback = function (event, data) {
 
-        default:
-            if ($stateParams.EmplID)
-                EmplID = $stateParams.EmplID;
-            $scope.isInAdminMode = true;
+        data.form.find('input[name=ConsID]').attr('readonly', true);
+        data.form.find('input[name=Time]').datepicker().datepicker('setDate', 'today');
 
     }
 
-    $scope.listActionUrl = '/consultancy/list/' + EmplID + '/' + $scope.mode;
-    $scope.createActionUrl = '/consultancy/add';
-    $scope.updateActionUrl = '/consultancy/update';
-    $scope.deleteActionUrl = '/consultancy/delete';
+    $scope.select = function(id) {
+
+        $state.transitionTo('consultancy.details',{ ConsID: id });
+
+    }
 
     $scope.fields = {
 
         ConsID: {
 
-            key: true,
             title: 'Mã tư vấn',
-            width: '10%',
-            list: true,
+            key: true,
+            defaultValue: Date.now(),
+            edit: false,
             create: true,
-            edit: true,
-            input: function (data) {
-                if (data.record) {
-                    return '<input type="text" name="ConsID" readonly value="' + data.record.ConsID + '"/>';
-                } else {
-                    return `<input type="text" name="ConsID" readonly value="${Date.now()}"/>`;
-                }
-
-            }
+            width: '10%'
 
 
         },
+
         ConsultingEmplID: {
+
             title: 'Nhân viên tư vấn',
             width: '20%',
-            list: $scope.mode !== 'consulting',
-            options: $scope.mode === 'consulting' ? '/employee/get/' + $localStorage.auth.token : '/employee/all-id'
+            options: '/employee/options?selected=EmplID%20Name'
+
         },
+
         CustomerID: {
+
             title: 'Khách hàng',
             width: '20%',
-            options: '/customer/all-id'
+            options: '/customer/options?selected=CustomerID%20Name'
 
         },
 
         ConsultedEmplID: {
+
             title: 'Nhân viên được tư vấn',
             width: '20%',
-            list: $scope.mode !== 'consulted',
-            options: $scope.mode === 'consulted' ? '/employee/get/' + $localStorage.auth.token : '/employee/all-id'
+            options: '/employee/options?selected=EmplID%20Name'
+
         },
 
-        Document: {
-            title: 'Tài liệu liên quan',
-            width: '20%'
-        },
+        // Document: {
+
+        //     title: 'Tài liệu liên quan',
+        //     width: '10%'
+
+        // },
 
         Time: {
+
             title: 'Thời gian',
-            width: '10%',
-            display: function (data) {
+            defaultValue: new Date(),
+            display: function(data) {
 
                 return new Date(data.record.Time).toLocaleDateString();
 
-
             }
+
         }
 
 
-    };
+    }
 
-    $scope.filter = function (object) {
+})
 
-        console.log(object);
-        $rootScope.$emit('filter', object);
+app.controller('consultancyDetailsCtrl', function($scope,info,customer,consultingEmpl,consultedEmpl,$rootScope,$localStorage){
+
+    $scope.mainInfo = info.Record;
+    $scope.customerName = customer.Record.Name;
+    $scope.consultingEmplName = consultingEmpl.Record.Name;
+    $scope.consultedEmplName = consultedEmpl.Record.Name;
+
+    console.log($scope.mainInfo);
+    $scope.uploadUrl = '/consultancy/file?ConsID=' + $scope.mainInfo.ConsID;
+    $scope.listAction = function(postData,params){
+
+        var pageSize = params.jtPageSize;
+        var currentPage = params.jtStartIndex;
+        return {
+
+            Result: 'OK',
+            TotalRecordCount: $scope.mainInfo.Document.length,
+            Records:  $scope.mainInfo.Document.slice(currentPage,currentPage + pageSize)
+
+        }
+
+    }
+
+    $scope.deleteAction = function(postData) {
+
+        return $.Deferred(function ($dfd) {
+            $.ajax({
+                url: '/consultancy?ConsID=' + $scope.mainInfo.ConsID,
+                type: 'PUT',
+                data: postData,
+                dataType: 'json',
+                beforeSend: function (request) {
+                    request.setRequestHeader('token', $localStorage.auth.token);
+                },
+                success: function (data) {
+                    $scope.mainInfo = data.Record;
+                    $dfd.resolve(data);
+                },
+                error: function () {
+                    $dfd.reject();
+                }
+            });
+
+        });
+
+    }
+
+    $scope.reload = function(records){
+
+        $scope.mainInfo.Document = records;
+        $rootScope.$emit('static-jtable-reload');
+
+    }
+
+    $scope.fields = {
+
+        originalname: {
+
+            title: 'Tên tài liệu',
+            width: '40%'
+
+        },
+
+        size: {
+
+            title: 'Kích cỡ',
+            width: '20%',
+            display: function(data){
+
+                return data.record.size + ' KB';
+
+            }
+
+
+        },
+
+        time: {
+
+            title: 'Thời gian',
+            width: '40%',
+            key: true,
+            display: function(data) {
+
+                return new Date(data.record.time).toLocaleString();
+
+            }
+
+
+        }
+
 
     }
 

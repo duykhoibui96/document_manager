@@ -1,7 +1,7 @@
 module.exports = {
 
 
-    forAngular: function(req, res, next) {
+    commonReq: function(req, res, next) {
 
         var token = req.headers['token'];
 
@@ -14,7 +14,7 @@ module.exports = {
         }
     },
 
-    forJtable: function(req,res,next) {
+    jtableReq: function(req,res,next) {
 
     	var token = req.headers['token'];
 

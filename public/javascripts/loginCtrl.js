@@ -5,43 +5,40 @@ app.controller('loginCtrl', function($scope, $http, $state, $rootScope, $localSt
     $rootScope.task = '';
 
 
-    $scope.signin = () => {
+    $scope.signin = function(){
 
         if ($scope.isAuthenticating)
             return;
         $scope.isAuthenticating = true;
-        $http.post('/accounts/authenticate', {
+        $http.post('/account/authenticate', {
 
             Username: $scope.username,
             Password: $scope.password
 
-        }).then(response => {
+        }).then(function(response) {
 
             var res = response.data;
             $scope.isAuthenticating = false;
-            switch (res.ret) {
-                case -1:
-                    $rootScope.showAlert('error', $rootScope.SERVER_ERR);
-                    break;
-
-                case 0:
-                    $rootScope.showAlert('error', 'Tài khoản hoặc mật khẩu không đúng!');
+            switch (res.Result) {
+                case 'ERROR':
+                    $rootScope.showAlert('error', res.Message);
                     break;
 
                 default:
 
                     $localStorage.auth = {
 
-                        username: $scope.username,
-                        token: res.token
+                        username: res.Record.Username,
+                        token: res.Record.EmplID
 
                     };
+
                     $state.transitionTo('dashboard');
 
             }
 
 
-        }, err => {
+        }, function(err) {
 
             console.log(err.status);
             $scope.isAuthenticating = false;

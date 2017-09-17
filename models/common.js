@@ -1,5 +1,12 @@
 module.exports = {
 
+    removeKey: function (obj) {
+
+        delete obj[Object.keys(obj)[0]];
+        return obj;
+
+    },
+
     filterList: function (docs, req, res) {
 
         var retList = [];
@@ -33,6 +40,105 @@ module.exports = {
             Records: retList.slice(req.query.jtStartIndex).slice(0, req.query.jtPageSize)
 
         });
+
+    },
+
+    forOptions: function (err, docs, key, display, res) {
+
+        if (err) {
+            console.log(err);
+            res.json({
+
+                Result: 'ERROR',
+                Message: 'Database error'
+
+            })
+        }
+        else {
+
+            var displayed = display.split(' ');
+            var options = [];
+            for (var i = 0; i < docs.length; i++)
+                options.push({
+
+                    Value: docs[i][key],
+                    DisplayText: `${docs[i][displayed[0]]} - ${docs[i][displayed[1]]}`
+
+                });
+            res.json({
+
+                Result: 'OK',
+                Options: options
+
+            });
+
+        }
+
+
+    },
+
+    forList: function (err, docs, req, res) {
+
+        if (err) {
+            console.log(err);
+            res.json({
+
+                Result: 'ERROR',
+                Message: 'Database error'
+
+            })
+        }
+        else
+            res.json({
+
+                Result: 'OK',
+                TotalRecordCount: docs.length,
+                Records: docs.slice(req.query.jtStartIndex).slice(0, req.query.jtPageSize)
+
+            });
+
+    },
+
+    forDetails: function (err, doc, res) {
+
+        if (err) {
+            console.log(err);
+            res.json({
+
+                Result: 'ERROR',
+                Message: 'Database error'
+
+            })
+        }
+        else
+            res.json({
+
+                Result: 'OK',
+                Record: doc
+
+            });
+
+
+    },
+
+    forDelete: function (err, doc, res) {
+
+        if (err) {
+            console.log(err);
+            res.json({
+
+                Result: 'ERROR',
+                Message: 'Database error'
+
+            })
+        }
+        else
+            res.json({
+
+                Result: 'OK'
+
+            });
+
 
     }
 

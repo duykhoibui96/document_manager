@@ -1,7 +1,0 @@
-<div class="title title-icon-list">
-    Danh sách khách hàng
-    <div class="pull-right" style="font-size: 0.5em; position: relative; top: 10px" ng-if="isAdmin && !isInAdminMode">
-        <a ui-sref="customer.admin-list">Xem toàn bộ danh sách</a>
-    </div>
-</div>
-<jtable jtable-id="all-jtable" title="Khách hàng" list-action-url="listActionUrl" create-action-url="createActionUrl" update-action-url="updateActionUrl" delete-action-url="deleteActionUrl" fields="fields" instant-load="true" record-click="seeDetails(id)"></jtable>

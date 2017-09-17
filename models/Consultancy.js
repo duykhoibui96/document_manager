@@ -14,7 +14,7 @@ var ConsultancySchema = new Schema({
     CustomerID: Number,
     ConsultedEmplID: Number,
     Content: String,
-    Document: String,
+    Document: [],
     Time: { type: Date, default: Date.now }
 
 

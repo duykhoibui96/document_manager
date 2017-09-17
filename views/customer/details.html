@@ -1,10 +1,9 @@
 <div class="title title-icon-details">
     thông tin khách hàng
     <div class="pull-right" style="padding: 5px 13px; position: relative; top: -5px; border-radius: 50%; background: linear-gradient(to bottom, gray, #2c3e50)">
-        <a ui-sref="customer.list"><span class="fa fa-arrow-left" style="color: white"></span></a>
+    	<a ui-sref="customer.list"><span class="fa fa-arrow-left" style="color: white"></span></a>
     </div>
 </div>
-<hr>
 <div class="container">
     <div class="row">
         <div class="col-sm-3 col-xs-12">
@@ -24,18 +23,18 @@
                         <p class="form-control-static">{{mainInfo.Name}}</p>
                     </div>
                 </div>
-            </form>
-        </div>
-        <div class="col-sm-4 col-xs-12">
-            <form class="form-horizontal" style="padding-top: 20px">
                 <div class="form-group">
                     <label class="control-label col-sm-5">Địa chỉ:</label>
                     <div class="col-sm-7">
                         <p class="form-control-static">{{mainInfo.Address}}</p>
                     </div>
                 </div>
+            </form>
+        </div>
+        <div class="col-sm-4 col-xs-12">
+            <form class="form-horizontal" style="padding-top: 20px">
                 <div class="form-group">
-                    <label class="control-label col-sm-5">Số điện thoại:</label>
+                    <label class="control-label col-sm-5">Điện thoại:</label>
                     <div class="col-sm-7">
                         <p class="form-control-static">{{mainInfo.Phone}}</p>
                     </div>
@@ -50,4 +49,6 @@
         </div>
     </div>
 </div>
-<jtable jtable-id="employee-jtable" fields="fields" title="Danh sách nhân viên quản lý" list-action-url="listActionUrl" create-action-url="createActionUrl" delete-action-url="deleteActionUrl" attached-list-data="attachedData" instant-load="true"></jtable>
+<jtable jtable-id="employee-table" title="Danh sách nhân viên quản lý" fields="employeeList.fields" list-action-url="employeeList.listActionUrl" create-action-url="employeeList.createActionUrl" delete-action-url="employeeList.deleteActionUrl" record-click="employeeList.select(id)" instant-load="true"></jtable>
+<div style="margin-top: 50px"></div>
+<jtable jtable-id="consultancy-table" title="Danh sách tư vấn" fields="consultancyList.fields" list-action-url="consultancyList.listActionUrl" create-action-url="consultancyList.createActionUrl" update-action-url="consultancyList.updateActionUrl" delete-action-url="consultancyList.deleteActionUrl" form-created-callback="consultancyList.formCreatedCallback(event,data)" record-click="consultancyList.select(id)" instant-load="true"></jtable>

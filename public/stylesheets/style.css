@@ -550,6 +550,22 @@ jtable select {
 
 }
 
+.menu button {
+
+    background: none;
+    border: none;
+    text-transform: uppercase;
+    text-align: left;
+    padding: 10px 20px !important;
+    display: block;
+
+}
+
+.menu button:hover {
+
+    font-weight: bold;
+
+}
 
 /* .report .title .fa,
 app-table .title .fa {
@@ -696,12 +712,6 @@ footer .navbar {
 .dropdown-menu {
 
     right: 0;
-}
-
-.btn {
-
-    font-size: 120%;
-    padding: 10px;
 }
 
 

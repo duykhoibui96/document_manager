@@ -1,129 +1,77 @@
-app.controller('employeeInfoCtrl', function ($scope, $http, $state, $stateParams, information, $rootScope) {
+app.controller('employeeListCtrl', function ($scope, $state) {
 
-    $scope.mainInfo = information.Record;
-    $scope.info = Object.assign({}, $scope.mainInfo, { EmplID: undefined, Name: undefined, Email: undefined });
-    $scope.mode = 'info';
-    $scope.updateInformation = function () {
+    $scope.title = 'danh sách nhân viên';
+    $scope.listActionUrl = '/employee';
+    $scope.createActionUrl = '/employee';
+    $scope.updateActionUrl = '/employee';
+    $scope.deleteActionUrl = '/employee';
 
-        $scope.isLoading = true;
-        $http.put('/employee/info', $scope.info).then(function (response) {
+    $scope.formCreatedCallback = function (event, data) {
 
-            $scope.isLoading = false;
-            var res = response.data;
-
-            switch (res.Result) {
-                case 'ERROR':
-                    $rootScope.showAlert('error', $rootScope.SERVER_ERR);
-                    break;
-
-                default:
-                    $rootScope.showAlert('success', $rootScope.UPDATE_SUCCESS);
-                    $scope.mainInfo = res.Record;
-
-            }
-
-        }, function (err) {
-
-            $scope.isLoading = false;
-            console.log(err.status);
-
-        })
-
-
-    }
-    $scope.updatePassword = function () {
-
-        $scope.isLoading = true;
-        $http.put('/accounts/info', { Password: $scope.password }).then(function (response) {
-
-            $scope.isLoading = false;
-            var res = response.data;
-
-            switch (res.Result) {
-                case 'ERROR':
-                    $rootScope.showAlert('error', $rootScope.SERVER_ERR);
-                    break;
-
-                default:
-                    $rootScope.showAlert('success', $rootScope.UPDATE_SUCCESS);
-                    $scope.password = $scope.confirmedPassword = '';
-
-            }
-
-        }, function (err) {
-
-            $scope.isLoading = false;
-            console.log(err.status);
-
-        })
+        console.log('Form created');
+        data.form.find('input[name=EmplID]').attr('readonly', true);
 
     }
 
+    $scope.select = function (id) {
 
-});
+        $state.transitionTo('employee.details', { EmplID: id });
 
-
-app.controller('employeeCustomerListCtrl', function ($scope) {
+    }
 
     $scope.fields = {
 
-        CustomerID: {
+        EmplID: {
 
-            title: 'Mã khách hàng',
-            width: '10%',
+            title: 'Mã nhân viên',
             key: true,
-            edit: true,
             create: true,
-            input: function (data) {
-                if (data.record) {
-                    return '<input type="text" name="CustomerID" readonly value="' + data.record.CustomerID + '"/>';
-                } else {
-                    return `<input type="text" name="CustomerID" readonly value="${Date.now()}"/>`;
-                }
+            defaultValue: Date.now(),
+            edit: false,
+            width: '10%'
 
-            }
+        },
+
+        EmplRcd: {
+
+            title: 'Record',
+            width: '5%'
 
         },
 
         Name: {
 
-            title: 'Tên khách hàng',
+            title: 'Tên',
             width: '20%'
 
-
         },
-        Address: {
 
-            title: 'Địa chỉ',
-            width: '20%'
+        ChildDepartment: {
 
-
-        },
-        Phone: {
-
-            title: 'Số điện thoại',
-            width: '10%'
-
-
-        },
-        Representative: {
-
-            title: 'Người đại diện',
+            title: 'Phòng ban',
             width: '15%'
 
+        },
+
+        OfficerCode: {
+
+            title: 'Chức vụ',
+            width: '15%'
 
         },
-        ResponsibleEmpl: {
 
-            title: 'Nhân viên quản lý',
-            width: '20%',
-            display: function (data) {
+        JobTitle: {
 
-                console.log(data);
-                return `<span>${data.record.ResponsibleEmpl.join()}</span>`;
+            title: 'Công việc',
+            width: '15%'
 
-            }
+        },
 
+        Mail: {
+
+            title: 'Email',
+            edit: false,
+            width: '20%'
 
         }
 
@@ -131,73 +79,324 @@ app.controller('employeeCustomerListCtrl', function ($scope) {
 
     }
 
-
-
 })
 
-app.controller('employeeConsultingCtrl', function ($scope,$localStorage) {
+app.controller('employeeDetailsCtrl', function ($scope, info, $state) {
 
-    $scope.fields = {
+    $scope.mainInfo = info.Record;
 
-        ConsID: {
+    $scope.mode = 'info';
+    $scope.info = Object.assign({}, $scope.mainInfo, { EmplID: undefined, Mail: undefined });
+    $scope.updateInformation = function () {
 
-            key: true,
-            title: 'Mã tư vấn',
-            width: '10%',
-            list: true,
-            create: true,
-            edit: true,
-            input: function (data) {
-                if (data.record) {
-                    return '<input type="text" name="ConsID" readonly value="' + data.record.ConsID + '"/>';
-                } else {
-                    return `<input type="text" name="ConsID" readonly value="${Date.now()}"/>`;
+        $scope.isLoading = true;
+        var url = $state.current.name === 'info' ? '/employee' : '/employee?EmplID=' + $scope.mainInfo.EmplID;
+        $http.put(url).then(function (response) {
+
+            $scope.isLoading = false;
+            var res = response.data;
+            if (res.Result === 'ERROR')
+                $rootScope.showAlert('error', res.Message);
+            else {
+                $rootScope.showAlert('success', 'Cập nhật dữ liệu thành công');
+                $scope.mainInfo = res.Record;
+            }
+
+
+        }, function (err) {
+
+            console.log(err.status);
+            $scope.isLoading = false;
+
+        })
+
+    }
+
+    $scope.updatePassword = function () {
+
+        $scope.isLoading = true;
+        $http.put('/account', { Password: $scope.password }).then(function (response) {
+
+            $scope.isLoading = false;
+            var res = response.data;
+            if (res.Result === 'ERROR')
+                $rootScope.showAlert('error', res.Message);
+            else
+                $rootScope.showAlert('success', 'Cập nhật dữ liệu thành công');
+
+
+        }, function (err) {
+
+            console.log(err.status);
+            $scope.isLoading = false;
+
+        })
+
+
+    }
+
+
+    $scope.customerList = {
+
+        listActionUrl: '/customer?EmplID=' + $scope.mainInfo.EmplID,
+        createActionUrl: '/customer?EmplID=' + $scope.mainInfo.EmplID,
+        deleteActionUrl: '/customer?EmplID=' + $scope.mainInfo.EmplID,
+
+        select: function (id) {
+
+            console.log(id);
+            $state.transitionTo('customer.details', { CustomerID: id });
+
+        },
+
+        fields: {
+
+            CustomerID: {
+
+                key: true,
+                defaultValue: Date.now(),
+                edit: false,
+                create: true,
+                title: 'Khách hàng',
+                width: '25%',
+                options: '/customer/options?selected=CustomerID%20Name'
+
+
+            },
+
+            Address: {
+
+                title: 'Địa chỉ',
+                width: '20%',
+                edit: false,
+                create: false,
+
+            },
+
+            Phone: {
+
+                title: 'Điện thoại',
+                width: '20%',
+                edit: false,
+                create: false,
+
+            },
+
+            Representative: {
+
+                title: 'Đại diện',
+                width: '20%',
+                edit: false,
+                create: false,
+
+            },
+
+            ResponsibleEmpl: {
+
+                title: 'Nhân viên phụ trách',
+                width: '10%',
+                edit: false,
+                create: false,
+                display: function (data) {
+
+                    var display = '<div>';
+                    var records = data.record.ResponsibleEmpl;
+                    for (var i = 0; i < records.length; i++)
+                        display += `<span>${records[i]}</span>,`;
+                    display += '</div>';
+                    return display;
+
+                }
+
+            }
+
+        }
+
+
+    }
+
+    $scope.consultingList = {
+
+        listActionUrl: '/consultancy?ConsultingEmplID=' + $scope.mainInfo.EmplID,
+        // createActionUrl: '/consultancy',
+        // deleteActionUrl: '/consultancy',
+
+        formCreatedCallback: function (event, data) {
+
+            data.form.find('input[name=ConsID]').attr('readonly', true);
+            data.form.find('input[name=Time]').datepicker().datepicker('setDate', 'today');
+
+        },
+
+        select: function (id) {
+
+            $state.transitionTo('consultancy.details', { ConsID: id });
+
+        },
+
+        fields: {
+
+            ConsID: {
+
+                title: 'Mã tư vấn',
+                key: true,
+                defaultValue: Date.now(),
+                edit: false,
+                create: true,
+                width: '10%'
+
+
+            },
+
+            ConsultingEmplID: {
+
+                title: 'Nhân viên tư vấn',
+                list: false,
+                options: [
+
+                    {
+                        Value: $scope.mainInfo.EmplID,
+                        DisplayText: `${$scope.mainInfo.EmplID} - ${$scope.mainInfo.Name}`
+                    }
+
+                ]
+
+            },
+
+            CustomerID: {
+
+                title: 'Khách hàng',
+                width: '30%',
+                edit: false,
+                create: true,
+                options: '/customer/options?selected=CustomerID%20Name'
+
+            },
+
+            ConsultedEmplID: {
+
+                title: 'Nhân viên được tư vấn',
+                width: '30%',
+                options: '/employee/options?selected=EmplID%20Name'
+
+            },
+
+            // Document: {
+
+            //     title: 'Tài liệu liên quan',
+            //     width: '20%'
+
+            // },
+
+            Time: {
+
+                title: 'Thời gian',
+                width: '10%',
+                defaultValue: new Date(),
+                display: function (data) {
+
+                    return new Date(data.record.Time).toLocaleDateString();
+
                 }
 
             }
 
 
-        },
-        ConsultingEmplID: {
-            title: 'Nhân viên tư vấn',
-            width: '20%',
-            list: false,
-            create: true,
-            edit: false,
-            options: '/employee/get/' + $localStorage.auth.token
-        },
-        CustomerID: {
-            title: 'Khách hàng',
-            width: '20%',
-            options: '/customer/all-id'
-
-        },
-
-        ConsultedEmplID: {
-            title: 'Nhân viên được tư vấn',
-            width: '20%',
-            options: '/employee/all-id'
-        },
-
-        Document: {
-            title: 'Tài liệu liên quan',
-            width: '20%'
-        },
-
-        Time: {
-            title: 'Thời gian',
-            width: '10%',
-            display: function (data) {
-
-                return new Date(data.record.Time).toLocaleDateString();
-
-
-            }
         }
 
+    }
 
-    };
+    $scope.consultedList = {
+
+        listActionUrl: '/consultancy?ConsultedEmplID=' + $scope.mainInfo.EmplID,
+        // createActionUrl: '/consultancy',
+        // deleteActionUrl: '/consultancy',
+
+        formCreatedCallback: function (event, data) {
+
+            data.form.find('input[name=ConsID]').attr('readonly', true);
+            data.form.find('input[name=Time]').datepicker().datepicker('setDate', 'today');
+
+        },
+
+        select: function (id) {
+
+            $state.transitionTo('consultancy.details', { ConsID: id });
+
+        },
+
+        fields: {
+
+            ConsID: {
+
+                title: 'Mã tư vấn',
+                key: true,
+                defaultValue: Date.now(),
+                edit: false,
+                create: true,
+                width: '10%'
 
 
+            },
+
+            ConsultingEmplID: {
+
+                title: 'Nhân viên tư vấn',
+                width: '30%',
+                options: '/employee/options?selected=EmplID%20Name'
+
+
+            },
+
+            CustomerID: {
+
+                title: 'Khách hàng',
+                width: '30%',
+                edit: false,
+                create: true,
+                options: '/customer/options?selected=CustomerID%20Name'
+
+            },
+
+            ConsultedEmplID: {
+
+                title: 'Nhân viên được tư vấn',
+                list: false,
+
+                options: [
+
+                    {
+                        Value: $scope.mainInfo.EmplID,
+                        DisplayText: `${$scope.mainInfo.EmplID} - ${$scope.mainInfo.Name}`
+                    }
+
+                ]
+
+            },
+
+            // Document: {
+
+            //     title: 'Tài liệu liên quan',
+            //     width: '20%'
+
+            // },
+
+            Time: {
+
+                title: 'Thời gian',
+                width: '10%',
+                defaultValue: new Date(),
+                display: function (data) {
+
+                    return new Date(data.record.Time).toLocaleDateString();
+
+                }
+
+            }
+
+
+        }
+
+    }
 
 })
