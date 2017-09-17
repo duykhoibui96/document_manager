@@ -87,6 +87,12 @@ app.controller('employeeDetailsCtrl', function ($scope, info, $state) {
 
     $scope.mode = 'info';
     $scope.info = Object.assign({}, $scope.mainInfo, { EmplID: undefined, Mail: undefined });
+    $scope.isCurrentEmployee = function() {
+
+        return $state.current.name === 'info';
+
+    }
+
     $scope.updateInformation = function () {
 
         $scope.isLoading = true;
@@ -185,7 +191,7 @@ app.controller('employeeDetailsCtrl', function ($scope, info, $state) {
             Representative: {
 
                 title: 'Đại diện',
-                width: '20%',
+                width: '10%',
                 edit: false,
                 create: false,
 
@@ -194,7 +200,7 @@ app.controller('employeeDetailsCtrl', function ($scope, info, $state) {
             ResponsibleEmpl: {
 
                 title: 'Nhân viên phụ trách',
-                width: '10%',
+                width: '20%',
                 edit: false,
                 create: false,
                 display: function (data) {

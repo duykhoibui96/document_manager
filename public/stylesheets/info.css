@@ -1,0 +1,52 @@
+.user-info-container {
+    margin-bottom: 50px
+}
+
+.green-theme {
+
+    background:#04B404;
+    color: white;
+}
+
+.orange-theme {
+
+    background: #FE9A2E;
+
+}
+
+.avatar {
+    padding: 50px;
+}
+
+.user-info-container.main-theme .avatar {
+    background: linear-gradient(to bottom, #2d89b4, #297ca3);
+}
+
+.user-info-container.green-theme .avatar {
+    background: #088A08;
+}
+
+.user-info-container.orange-theme .avatar {
+    background: #DF7401;
+}
+
+.avatar img {
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+.avatar span {
+    font-size: 1.5em;
+}
+
+.user-content {
+    padding: 20px 10px;
+}
+
+.user-content .list-group-item {
+    padding-left: 50px;
+}
+
+.user-content i {
+    width: 50px;
+}

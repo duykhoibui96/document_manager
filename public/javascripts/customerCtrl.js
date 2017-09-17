@@ -9,6 +9,7 @@ app.controller('customerListCtrl', function ($scope, $state) {
     $scope.formCreatedCallback = function (event, data) {
 
         data.form.find('input[name=CustomerID]').attr('readonly', true);
+        data.form.find('select[name=ResponsibleEmpl]').attr('multiple','multiple');
 
     }
 
@@ -35,7 +36,7 @@ app.controller('customerListCtrl', function ($scope, $state) {
         Name: {
 
             title: 'Tên',
-            width: '20%'
+            width: '30%'
 
         },
 
@@ -63,17 +64,18 @@ app.controller('customerListCtrl', function ($scope, $state) {
         ResponsibleEmpl: {
 
             title: 'Nhân viên phụ trách',
-            width: '10%',
-            display: function (data) {
+            // width: '10%',
+            list: false,
+            // display: function (data) {
 
-                var display = '<div>';
-                var records = data.record.ResponsibleEmpl;
-                for (var i = 0; i < records.length; i++)
-                    display += `<span>${records[i]}</span>,`;
-                display += '</div>';
-                return display;
+            //     var display = '<div>';
+            //     var records = data.record.ResponsibleEmpl;
+            //     for (var i = 0; i < records.length; i++)
+            //         display += `<span>${records[i]}</span>,`;
+            //     display += '</div>';
+            //     return display;
 
-            },
+            // },
             options: '/employee/options?selected=EmplID%20Name'
 
         }

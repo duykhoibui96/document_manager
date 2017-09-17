@@ -230,7 +230,7 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
         .state('info', {
 
             url: '/info',
-            templateUrl: 'employee/current_details.html',
+            templateUrl: 'employee/details.html',
             controller: 'employeeDetailsCtrl',
             onEnter: function ($rootScope) {
 
