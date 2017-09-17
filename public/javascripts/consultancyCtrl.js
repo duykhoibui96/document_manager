@@ -140,7 +140,12 @@ app.controller('consultancyDetailsCtrl', function($scope,info,customer,consultin
         originalname: {
 
             title: 'Tên tài liệu',
-            width: '40%'
+            width: '40%',
+            display: function(data) {
+
+                return `<a href="${data.record.path}" download="${data.record.originalname}">${data.record.originalname}</a>`
+
+            }
 
         },
 

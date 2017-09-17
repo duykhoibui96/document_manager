@@ -84,6 +84,7 @@ app.controller('employeeListCtrl', function ($scope, $state) {
 app.controller('employeeDetailsCtrl', function ($scope, info, $state) {
 
     $scope.mainInfo = info.Record;
+    $scope.isLoading = false;
 
     $scope.mode = 'info';
     $scope.info = Object.assign({}, $scope.mainInfo, { EmplID: undefined, Mail: undefined });

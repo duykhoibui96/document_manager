@@ -1,54 +1,82 @@
-<div class="title title-icon-details">
-    thông tin khách hàng
-    <div class="pull-right" style="padding: 5px 13px; position: relative; top: -5px; border-radius: 50%; background: linear-gradient(to bottom, gray, #2c3e50)">
-    	<a ui-sref="customer.list"><span class="fa fa-arrow-left" style="color: white"></span></a>
-    </div>
-</div>
-<div class="container">
-    <div class="row">
-        <div class="col-sm-3 col-xs-12">
-            <img src="/assets/images/user.png" alt="" class="img-circle img-responsive" style="width: 100%; padding: 20px">
-        </div>
-        <div class="col-sm-4 col-sm-offset-1 col-xs-12">
-            <form class="form-horizontal" style="padding-top: 20px">
-                <div class="form-group">
-                    <label class="control-label col-sm-5">Mã khách hàng:</label>
-                    <div class="col-sm-7">
-                        <p class="form-control-static">{{mainInfo.CustomerID}}</p>
-                    </div>
+<link rel="stylesheet" type="text/css" href="assets/stylesheets/info.css">
+<div class="row">
+    <div class="col-sm-3 col-xs-12">
+        <div class="user-info-container orange-theme">
+            <div class="avatar text-center">
+                <img src="/assets/images/user.png" alt="" class="img-circle img-responsive">
+                <span class="title">{{mainInfo.Name}}</span>
+            </div>
+            <div class="user-content">
+                <ul class="list-group">
+                    <li class="list-group-item" title="Mã khách hàng">
+                        <i class="fa fa-id-card" aria-hidden="true"></i> {{mainInfo.CustomerID}}
+                    </li>
+                </ul>
+                <div class="text-center menu">
+                    <hr>
+                    <button type="button" ng-click="mode = 'info'">thông tin</button>
+                    <button type="button" ng-click="mode = 'employee'">nhân viên quản lý</button>
+                    <button type="button" ng-click="mode = 'consultancy'">tư vấn</button>
                 </div>
-                <div class="form-group">
-                    <label class="control-label col-sm-5">Tên khách hàng:</label>
-                    <div class="col-sm-7">
-                        <p class="form-control-static">{{mainInfo.Name}}</p>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-sm-5">Địa chỉ:</label>
-                    <div class="col-sm-7">
-                        <p class="form-control-static">{{mainInfo.Address}}</p>
-                    </div>
-                </div>
-            </form>
-        </div>
-        <div class="col-sm-4 col-xs-12">
-            <form class="form-horizontal" style="padding-top: 20px">
-                <div class="form-group">
-                    <label class="control-label col-sm-5">Điện thoại:</label>
-                    <div class="col-sm-7">
-                        <p class="form-control-static">{{mainInfo.Phone}}</p>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-sm-5">Người đại diện:</label>
-                    <div class="col-sm-7">
-                        <p class="form-control-static">{{mainInfo.Representative}}</p>
-                    </div>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
+    <div class="col-sm-9 col-xs-12" ng-switch="mode">
+        <div ng-switch-when="info">
+            <div class="title title-icon-form">
+                thông tin
+            </div>
+            <form ng-submit="update()">
+                <div class="form-group">
+                    <label>Tên</label>
+                    <input type="text" name="Name" class="form-control custom-input" ng-model="info.Name" value="{{mainInfo.Name}}" ng-disable="isLoading"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label>Địa chỉ</label>
+                    <input type="text" name="Address" class="form-control custom-input" ng-model="info.Address" value="{{mainInfo.Address}}"
+                        ng-disable="isLoading" required>
+                </div>
+                <div class="form-group">
+                    <label>Điện thoại</label>
+                    <input type="text" name="Phone" class="form-control custom-input" ng-model="info.Phone" value="{{mainInfo.Phone}}" ng-disable="isLoading"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label>Người đại diện</label>
+                    <input type="text" name="Representative" class="form-control custom-input" ng-model="info.Representative" value="{{mainInfo.Representative}}"
+                        ng-disable="isLoading" required>
+                </div>
+                <div class="text-right" ng-style="{ 'opacity': isLoading ? '0.5' : '1' }">
+                    <button type="submit" class="button has-icon warn submit">
+                                                <div ng-show="isLoading">
+                                                    Đang lưu ...
+                                                </div>
+                                                <div ng-hide="isLoading">
+                                                    Lưu
+                                                </div>
+                            </button>
+                    <button type="reset" class="button has-icon refresh">Trở lại mặc định</button>
+                </div>
+            </form>
+
+        </div>
+        <div ng-switch-when="employee">
+            <div class="title title-icon-list">
+                danh sách nhân viên quản lý
+            </div>
+            <jtable jtable-id="employee-table" title="Danh sách" fields="employeeList.fields" list-action-url="employeeList.listActionUrl"
+                create-action-url="employeeList.createActionUrl" delete-action-url="employeeList.deleteActionUrl" record-click="employeeList.select(id)"
+                instant-load="true"></jtable>
+        </div>
+        <div ng-switch-when="consultancy">
+            <div class="title title-icon-history">
+                danh sách tư vấn
+            </div>
+            <jtable jtable-id="consultancy-table" title="Danh sách" fields="consultancyList.fields" list-action-url="consultancyList.listActionUrl"
+                create-action-url="consultancyList.createActionUrl" update-action-url="consultancyList.updateActionUrl" delete-action-url="consultancyList.deleteActionUrl"
+                form-created-callback="consultancyList.formCreatedCallback(event,data)" record-click="consultancyList.select(id)"
+                instant-load="true"></jtable>
+        </div>
+    </div>
 </div>
-<jtable jtable-id="employee-table" title="Danh sách nhân viên quản lý" fields="employeeList.fields" list-action-url="employeeList.listActionUrl" create-action-url="employeeList.createActionUrl" delete-action-url="employeeList.deleteActionUrl" record-click="employeeList.select(id)" instant-load="true"></jtable>
-<div style="margin-top: 50px"></div>
-<jtable jtable-id="consultancy-table" title="Danh sách tư vấn" fields="consultancyList.fields" list-action-url="consultancyList.listActionUrl" create-action-url="consultancyList.createActionUrl" update-action-url="consultancyList.updateActionUrl" delete-action-url="consultancyList.deleteActionUrl" form-created-callback="consultancyList.formCreatedCallback(event,data)" record-click="consultancyList.select(id)" instant-load="true"></jtable>

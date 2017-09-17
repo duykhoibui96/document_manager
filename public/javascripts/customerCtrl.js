@@ -86,9 +86,37 @@ app.controller('customerListCtrl', function ($scope, $state) {
 
 })
 
-app.controller('customerDetailsCtrl', function ($scope, info, $state) {
+app.controller('customerDetailsCtrl', function ($scope, info, $state, $http, $rootScope) {
+
+    $scope.isLoading = false;
 
     $scope.mainInfo = info.Record;
+    $scope.info = Object.assign({}, $scope.mainInfo, { CustomerID: undefined });
+    $scope.mode = 'info';
+
+    $scope.update = function() {
+
+        $scope.isLoading = true;
+        $http.put('/customer?CustomerID=' + $scope.mainInfo.CustomerID, $scope.info).then(function(response){
+
+            $scope.isLoading = false;
+            var res = response.data;
+            if (res.Result === 'ERROR')
+                $rootScope.showAlert('error', res.Message);
+            else {
+                $rootScope.showAlert('success', 'Cập nhật dữ liệu thành công');
+                $scope.mainInfo = res.Record;
+            }
+
+
+        }, function(err){
+
+            console.log(err);
+            $scope.isLoading = false;
+
+        })
+
+    }
 
     $scope.employeeList = {
 

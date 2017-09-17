@@ -561,9 +561,10 @@ jtable select {
 
 }
 
-.menu button:hover {
+.menu button:hover, .menu button:focus {
 
     font-weight: bold;
+    border: none;
 
 }
 
