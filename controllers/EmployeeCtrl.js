@@ -5,7 +5,9 @@ module.exports = {
 
     get: function (req, res) {
 
-        Employee.findOne({ EmplID: req.params.id }, function (err, doc) {
+        Employee.findOne({
+            EmplID: req.params.id
+        }, function (err, doc) {
 
             common.forDetails(err, doc, res);
 
@@ -28,8 +30,30 @@ module.exports = {
 
     list: function (req, res) {
 
+        var searchObj = {};
 
-        Employee.find().exec(function (err, docs) {
+        if (req.query.text) {
+            if (req.query.cat === 'EmplID')
+                searchObj = {
+
+                    EmplID: Number(req.query.text)
+
+                }
+            else
+                searchObj = {
+
+                    Name: {
+                        "$regex": req.query.text,
+                        "$options": "i"
+                    }
+
+                }
+
+        }
+
+        console.log(searchObj);
+
+        Employee.find(searchObj).exec(function (err, docs) {
 
             common.forList(err, docs, req, res);
 
@@ -58,7 +82,9 @@ module.exports = {
 
         };
 
-        Employee.findOneAndUpdate(idObj, req.body, { new: true }, function (err, doc) {
+        Employee.findOneAndUpdate(idObj, req.body, {
+            new: true
+        }, function (err, doc) {
 
             common.forDetails(err, doc, res);
 

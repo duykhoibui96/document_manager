@@ -1,4 +1,4 @@
-app.controller('employeeListCtrl', function ($scope, $state) {
+app.controller('employeeListCtrl', function ($scope, $state, $rootScope) {
 
     $scope.title = 'danh sách nhân viên';
     $scope.listActionUrl = '/employee';
@@ -6,16 +6,46 @@ app.controller('employeeListCtrl', function ($scope, $state) {
     $scope.updateActionUrl = '/employee';
     $scope.deleteActionUrl = '/employee';
 
+    $scope.filterType = 1;
+
+    $scope.selectedCat = 'EmplID';
+    $scope.searchCat = [
+
+        {
+            value: 'EmplID',
+            name: 'Mã nhân viên'
+        },
+
+        {
+            value: 'Name',
+            name: 'Tên nhân viên'
+        }
+
+    ]
+    $scope.search = function() {
+
+        $rootScope.$emit('filtering', {
+
+            searchText: $scope.searchText,
+            selectedCat: $scope.selectedCat
+
+        })
+
+    }
+
     $scope.formCreatedCallback = function (event, data) {
 
         console.log('Form created');
         data.form.find('input[name=EmplID]').attr('readonly', true);
+        data.form.find('input[name=EmplID]').val(Date.now());
 
     }
 
     $scope.select = function (id) {
 
-        $state.transitionTo('employee.details', { EmplID: id });
+        $state.transitionTo('employee.details', {
+            EmplID: id
+        });
 
     }
 
@@ -26,7 +56,6 @@ app.controller('employeeListCtrl', function ($scope, $state) {
             title: 'Mã nhân viên',
             key: true,
             create: true,
-            defaultValue: Date.now(),
             edit: false,
             width: '10%'
 
@@ -81,14 +110,17 @@ app.controller('employeeListCtrl', function ($scope, $state) {
 
 })
 
-app.controller('employeeDetailsCtrl', function ($scope, info, $state) {
+app.controller('employeeDetailsCtrl', function ($scope, info, $state, representativeName) {
 
     $scope.mainInfo = info.Record;
     $scope.isLoading = false;
 
     $scope.mode = 'info';
-    $scope.info = Object.assign({}, $scope.mainInfo, { EmplID: undefined, Mail: undefined });
-    $scope.isCurrentEmployee = function() {
+    $scope.info = Object.assign({}, $scope.mainInfo, {
+        EmplID: undefined,
+        Mail: undefined
+    });
+    $scope.isCurrentEmployee = function () {
 
         return $state.current.name === 'info';
 
@@ -122,7 +154,9 @@ app.controller('employeeDetailsCtrl', function ($scope, info, $state) {
     $scope.updatePassword = function () {
 
         $scope.isLoading = true;
-        $http.put('/account', { Password: $scope.password }).then(function (response) {
+        $http.put('/account', {
+            Password: $scope.password
+        }).then(function (response) {
 
             $scope.isLoading = false;
             var res = response.data;
@@ -152,7 +186,9 @@ app.controller('employeeDetailsCtrl', function ($scope, info, $state) {
         select: function (id) {
 
             console.log(id);
-            $state.transitionTo('customer.details', { CustomerID: id });
+            $state.transitionTo('customer.details', {
+                CustomerID: id
+            });
 
         },
 
@@ -165,7 +201,7 @@ app.controller('employeeDetailsCtrl', function ($scope, info, $state) {
                 edit: false,
                 create: true,
                 title: 'Khách hàng',
-                width: '25%',
+                width: '40%',
                 options: '/customer/options?selected=CustomerID%20Name'
 
 
@@ -192,7 +228,7 @@ app.controller('employeeDetailsCtrl', function ($scope, info, $state) {
             Representative: {
 
                 title: 'Đại diện',
-                width: '10%',
+                width: '20%',
                 edit: false,
                 create: false,
 
@@ -201,19 +237,21 @@ app.controller('employeeDetailsCtrl', function ($scope, info, $state) {
             ResponsibleEmpl: {
 
                 title: 'Nhân viên phụ trách',
-                width: '20%',
+                // width: '10%',
+                list: false,
                 edit: false,
                 create: false,
-                display: function (data) {
+                // display: function (data) {
 
-                    var display = '<div>';
-                    var records = data.record.ResponsibleEmpl;
-                    for (var i = 0; i < records.length; i++)
-                        display += `<span>${records[i]}</span>,`;
-                    display += '</div>';
-                    return display;
+                //     var display = '<div>';
+                //     var records = data.record.ResponsibleEmpl;
+                //     for (var i = 0; i < records.length; i++)
+                //         display += `<span>${records[i]}</span>,`;
+                //     display += '</div>';
+                //     return display;
 
-                }
+                // },
+                options: '/employee/options?selected=EmplID%20Name'
 
             }
 
@@ -237,7 +275,9 @@ app.controller('employeeDetailsCtrl', function ($scope, info, $state) {
 
         select: function (id) {
 
-            $state.transitionTo('consultancy.details', { ConsID: id });
+            $state.transitionTo('consultancy.details', {
+                ConsID: id
+            });
 
         },
 
@@ -328,7 +368,9 @@ app.controller('employeeDetailsCtrl', function ($scope, info, $state) {
 
         select: function (id) {
 
-            $state.transitionTo('consultancy.details', { ConsID: id });
+            $state.transitionTo('consultancy.details', {
+                ConsID: id
+            });
 
         },
 

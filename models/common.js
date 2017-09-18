@@ -93,7 +93,7 @@ module.exports = {
 
                 Result: 'OK',
                 TotalRecordCount: docs.length,
-                Records: docs.slice(req.query.jtStartIndex).slice(0, req.query.jtPageSize)
+                Records: docs.slice(req.query.jtStartIndex,req.query.jtStartIndex + req.query.jtPageSize)
 
             });
 

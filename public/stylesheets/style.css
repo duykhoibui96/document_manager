@@ -470,6 +470,10 @@ jtable select {
     content: "\f044";
 }
 
+.search::after {
+    content: "\f002";
+}
+
 .add::after {
     content: "\f067";
 }

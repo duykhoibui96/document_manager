@@ -139,6 +139,16 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
 
                     })
 
+                },
+
+                representativeName: function ($http, info) {
+
+                    var id = info.Record.Representative;
+                    return $http.get('/employee/details/' + id).then(function (response) {
+
+                        return response.data;
+
+                    })
 
                 }
 
@@ -276,7 +286,9 @@ app.run(function ($rootScope, $timeout, $mdDialog, $localStorage, $transitions, 
 
     $transitions.onBefore({
 
-        to: function (state) { return state.name !== 'login' && state.name !== '500'; }
+        to: function (state) {
+            return state.name !== 'login' && state.name !== '500';
+        }
 
     }, function (trans) {
 
@@ -289,7 +301,9 @@ app.run(function ($rootScope, $timeout, $mdDialog, $localStorage, $transitions, 
 
 
 
-    $transitions.onBefore({ to: 'login' }, function (trans) {
+    $transitions.onBefore({
+        to: 'login'
+    }, function (trans) {
 
         console.log('On before');
 
@@ -387,7 +401,9 @@ app.run(function ($rootScope, $timeout, $mdDialog, $localStorage, $transitions, 
 
     }*/
 
-    $rootScope.isAuthenticated = function () { return $localStorage.auth; }
+    $rootScope.isAuthenticated = function () {
+        return $localStorage.auth;
+    }
 
     $rootScope.getUsername = function () {
 
@@ -432,12 +448,12 @@ app.run(function ($rootScope, $timeout, $mdDialog, $localStorage, $transitions, 
 
         $mdDialog.show(
             $mdDialog.alert()
-                .parent(angular.element(document.body))
-                .clickOutsideToClose(true)
-                .title(title)
-                .textContent(content)
-                .ariaLabel(type)
-                .ok('OK!')
+            .parent(angular.element(document.body))
+            .clickOutsideToClose(true)
+            .title(title)
+            .textContent(content)
+            .ariaLabel(type)
+            .ok('OK!')
         );
     };
 
@@ -481,8 +497,13 @@ app.directive('filterBox', function () {
             scope.recentDays = '0';
             scope.startFiltering = function () {
 
-                var startDate = new Date(scope.startDate);
-                var endDate = new Date(scope.endDate);
+                var startDate = new Date(scope.startDate.replace(/(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3"));
+                var endDate = new Date(scope.endDate.replace(/(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3"));
+
+                console.log(scope.startDate);
+                console.log(scope.endDate);
+
+                console.log(startDate);
 
                 if (scope.mode !== 'optional') {
 
@@ -492,6 +513,9 @@ app.directive('filterBox', function () {
                     startDate.setDate(endDate.getDate() - recentDays);
 
                 }
+
+                startDate = startDate.getTime();
+                endDate = endDate.getTime();
 
                 scope.filterFunc({
                     dateRange: {
@@ -506,7 +530,9 @@ app.directive('filterBox', function () {
             };
 
             $(function () {
-                $('.begin-date, .end-date').datepicker();
+                $('.begin-date, .end-date').datepicker({
+                    dateFormat: 'dd-mm-yy'
+                });
 
                 scope.$watch('recentDays', function (newValue, oldValue) {
 
@@ -563,7 +589,9 @@ app.directive('jtable', function ($localStorage, $http, $rootScope) {
                     recordsLoaded: function (event, data) {
                         $(selector + ' .jtable-data-row').click(function () {
                             var row_id = $(this).attr('data-record-key');
-                            scope.recordClick({ id: row_id });
+                            scope.recordClick({
+                                id: row_id
+                            });
                         });
                     },
                     jqueryuiTheme: true,
@@ -578,6 +606,14 @@ app.directive('jtable', function ($localStorage, $http, $rootScope) {
 
 
                             // var data = $.extend({}, postData, scope.attachedListData);
+                            console.log(postData);
+                            if (postData)
+                                if (postData.searchText) {
+                                    url += `&text=${postData.searchText}&cat=${postData.selectedCat}`
+                                }
+                            else {
+                                url += `&start=${postData.startDate}&end=${postData.endDate}`;
+                            }
                             return $.Deferred(function ($dfd) {
 
                                 $.ajax({
@@ -703,6 +739,7 @@ app.directive('jtable', function ($localStorage, $http, $rootScope) {
 
                 $rootScope.$on('filtering', function (event, object) {
 
+                    console.log(object);
                     $(selector).jtable('load', object);
 
                 })
@@ -798,10 +835,13 @@ app.directive('staticJtable', function ($localStorage, $http, $rootScope) {
                 $(selector).jtable({
                     title: scope.title,
                     paging: true, //Enable paging
+                    sorting: true,
                     recordsLoaded: function (event, data) {
                         $(selector + ' .jtable-data-row').click(function () {
                             var row_id = $(this).attr('data-record-key');
-                            scope.recordClick({ id: row_id });
+                            scope.recordClick({
+                                id: row_id
+                            });
                         });
                     },
                     jqueryuiTheme: true,
@@ -809,22 +849,34 @@ app.directive('staticJtable', function ($localStorage, $http, $rootScope) {
 
                         listAction: function (postData, params) {
 
-                            return scope.listAction({ postData: postData, params: params });
+                            return scope.listAction({
+                                postData: postData,
+                                params: params
+                            });
 
                         },
                         createAction: scope.isCreatable ? function (postData, params) {
 
-                            return scope.createAction({ postData: postData, params: params });
+                            return scope.createAction({
+                                postData: postData,
+                                params: params
+                            });
 
                         } : undefined,
                         updateAction: scope.isEditable ? function (postData, params) {
 
-                            return scope.updateAction({ postData: postData, params: params });
+                            return scope.updateAction({
+                                postData: postData,
+                                params: params
+                            });
 
                         } : undefined,
                         deleteAction: scope.isDeletable ? function (postData, params) {
 
-                            return scope.deleteAction({ postData: postData, params: params });
+                            return scope.deleteAction({
+                                postData: postData,
+                                params: params
+                            });
 
                         } : undefined,
 
@@ -887,8 +939,10 @@ app.directive('scrollToItem', function () {
         link: function (scope, $elm, attr) {
 
             $elm.on('click', function () {
-                $('html,body').animate({ scrollTop: $(scope.scrollTo).offset().top }, "slow");
+                $('html,body').animate({
+                    scrollTop: $(scope.scrollTo).offset().top
+                }, "slow");
             });
         }
     }
-}) 
+})

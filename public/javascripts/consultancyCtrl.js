@@ -1,4 +1,4 @@
-app.controller('consultancyListCtrl', function ($scope, $state) {
+app.controller('consultancyListCtrl', function ($scope, $state, $rootScope) {
 
     $scope.title = 'danh sách tư vấn';
     $scope.listActionUrl = '/consultancy';
@@ -6,16 +6,29 @@ app.controller('consultancyListCtrl', function ($scope, $state) {
     $scope.updateActionUrl = '/consultancy';
     $scope.deleteActionUrl = '/consultancy';
 
-    $scope.formCreatedCallback = function (event, data) {
+    $scope.filterType = 2;
 
-        data.form.find('input[name=ConsID]').attr('readonly', true);
-        data.form.find('input[name=Time]').datepicker().datepicker('setDate', 'today');
+    $scope.search = function (dateRange) {
+
+        $rootScope.$emit('filtering', dateRange);
 
     }
 
-    $scope.select = function(id) {
+    $scope.formCreatedCallback = function (event, data) {
 
-        $state.transitionTo('consultancy.details',{ ConsID: id });
+        data.form.find('input[name=ConsID]').attr('readonly', true);
+        data.form.find('input[name=Time]').datepicker({
+            dateFormat: 'dd-mm-yy'
+        }).datepicker('setDate', 'today');
+        data.form.find('input[name=ConsID]').val(Date.now());
+
+    }
+
+    $scope.select = function (id) {
+
+        $state.transitionTo('consultancy.details', {
+            ConsID: id
+        });
 
     }
 
@@ -25,7 +38,6 @@ app.controller('consultancyListCtrl', function ($scope, $state) {
 
             title: 'Mã tư vấn',
             key: true,
-            defaultValue: Date.now(),
             edit: false,
             create: true,
             width: '10%'
@@ -67,8 +79,7 @@ app.controller('consultancyListCtrl', function ($scope, $state) {
         Time: {
 
             title: 'Thời gian',
-            defaultValue: new Date(),
-            display: function(data) {
+            display: function (data) {
 
                 return new Date(data.record.Time).toLocaleDateString();
 
@@ -81,30 +92,64 @@ app.controller('consultancyListCtrl', function ($scope, $state) {
 
 })
 
-app.controller('consultancyDetailsCtrl', function($scope,info,customer,consultingEmpl,consultedEmpl,$rootScope,$localStorage){
+app.controller('consultancyDetailsCtrl', function ($scope, info, customer, consultingEmpl, consultedEmpl, $rootScope, $localStorage) {
 
     $scope.mainInfo = info.Record;
     $scope.customerName = customer.Record.Name;
     $scope.consultingEmplName = consultingEmpl.Record.Name;
     $scope.consultedEmplName = consultedEmpl.Record.Name;
 
-    console.log($scope.mainInfo);
+    $scope.mainInfo.Document.sort(function (docA, docB) {
+
+        return docA.time - docB.time;
+
+    })
+
+    $scope.search = function(dateRange){
+
+        $rootScope.$emit('filtering',dateRange);
+
+    }
+
     $scope.uploadUrl = '/consultancy/file?ConsID=' + $scope.mainInfo.ConsID;
-    $scope.listAction = function(postData,params){
+    $scope.listAction = function (postData, params) {
 
         var pageSize = params.jtPageSize;
         var currentPage = params.jtStartIndex;
+
+        var docs = $scope.mainInfo.Document.slice();
+
+        if (postData)
+        {
+            var start = new Date(postData.startDate);
+            var end = new Date(postData.endDate);
+            console.log(postData);
+
+            docs = docs.filter(function(obj){
+                
+                var time = new Date(obj.time);
+                return start<= time && time <= end;
+                
+            })
+        }
+        
         return {
 
             Result: 'OK',
-            TotalRecordCount: $scope.mainInfo.Document.length,
-            Records:  $scope.mainInfo.Document.slice(currentPage,currentPage + pageSize)
+            TotalRecordCount: docs.length,
+            Records: docs.slice(currentPage, currentPage + pageSize)
 
         }
 
     }
 
-    $scope.deleteAction = function(postData) {
+    $scope.deleteAction = function (postData) {
+
+        for (var i = 0; i < $scope.mainInfo.Document.length; i++)
+            if (postData.time === $scope.mainInfo.Document[i].time) {
+                postData.path = $scope.mainInfo.Document[i].path;
+                break;
+            }
 
         return $.Deferred(function ($dfd) {
             $.ajax({
@@ -117,6 +162,11 @@ app.controller('consultancyDetailsCtrl', function($scope,info,customer,consultin
                 },
                 success: function (data) {
                     $scope.mainInfo = data.Record;
+                    $scope.mainInfo.Document.sort(function (docA, docB) {
+
+                        return docA.time - docB.time;
+
+                    })
                     $dfd.resolve(data);
                 },
                 error: function () {
@@ -128,7 +178,7 @@ app.controller('consultancyDetailsCtrl', function($scope,info,customer,consultin
 
     }
 
-    $scope.reload = function(records){
+    $scope.reload = function (records) {
 
         $scope.mainInfo.Document = records;
         $rootScope.$emit('static-jtable-reload');
@@ -141,7 +191,7 @@ app.controller('consultancyDetailsCtrl', function($scope,info,customer,consultin
 
             title: 'Tên tài liệu',
             width: '40%',
-            display: function(data) {
+            display: function (data) {
 
                 return `<a href="${data.record.path}" download="${data.record.originalname}">${data.record.originalname}</a>`
 
@@ -153,7 +203,7 @@ app.controller('consultancyDetailsCtrl', function($scope,info,customer,consultin
 
             title: 'Kích cỡ',
             width: '20%',
-            display: function(data){
+            display: function (data) {
 
                 return data.record.size + ' KB';
 
@@ -167,7 +217,7 @@ app.controller('consultancyDetailsCtrl', function($scope,info,customer,consultin
             title: 'Thời gian',
             width: '40%',
             key: true,
-            display: function(data) {
+            display: function (data) {
 
                 return new Date(data.record.time).toLocaleString();
 

@@ -1,4 +1,4 @@
-app.controller('customerListCtrl', function ($scope, $state) {
+app.controller('customerListCtrl', function ($scope, $state, $rootScope) {
 
     $scope.title = 'danh sách khách hàng';
     $scope.listActionUrl = '/customer';
@@ -6,16 +6,47 @@ app.controller('customerListCtrl', function ($scope, $state) {
     $scope.updateActionUrl = '/customer';
     $scope.deleteActionUrl = '/customer';
 
+    $scope.filterType = 1;
+
+    $scope.selectedCat = 'CustomerID';
+    $scope.searchCat = [
+
+        {
+            value: 'CustomerID',
+            name: 'Mã khách hàng'
+        },
+
+        {
+            value: 'Name',
+            name: 'Tên khách hàng'
+        }
+
+    ]
+
+    $scope.search = function () {
+
+        $rootScope.$emit('filtering', {
+
+            searchText: $scope.searchText,
+            selectedCat: $scope.selectedCat
+
+        })
+
+    }
+
     $scope.formCreatedCallback = function (event, data) {
 
         data.form.find('input[name=CustomerID]').attr('readonly', true);
-        data.form.find('select[name=ResponsibleEmpl]').attr('multiple','multiple');
+        data.form.find('select[name=ResponsibleEmpl]').attr('multiple', 'multiple');
+        data.form.find('input[name=CustomerID]').val(Date.now());
 
     }
 
     $scope.select = function (id) {
 
-        $state.transitionTo('customer.details', { CustomerID: id });
+        $state.transitionTo('customer.details', {
+            CustomerID: id
+        });
 
     }
 
@@ -24,7 +55,6 @@ app.controller('customerListCtrl', function ($scope, $state) {
         CustomerID: {
 
             key: true,
-            defaultValue: Date.now(),
             edit: false,
             create: true,
             title: 'Mã khách hàng',
@@ -36,7 +66,7 @@ app.controller('customerListCtrl', function ($scope, $state) {
         Name: {
 
             title: 'Tên',
-            width: '30%'
+            width: '20%'
 
         },
 
@@ -57,7 +87,8 @@ app.controller('customerListCtrl', function ($scope, $state) {
         Representative: {
 
             title: 'Đại diện',
-            width: '20%'
+            width: '30%',
+            options: '/employee/options?selected=EmplID%20Name'
 
         },
 
@@ -91,13 +122,15 @@ app.controller('customerDetailsCtrl', function ($scope, info, $state, $http, $ro
     $scope.isLoading = false;
 
     $scope.mainInfo = info.Record;
-    $scope.info = Object.assign({}, $scope.mainInfo, { CustomerID: undefined });
+    $scope.info = Object.assign({}, $scope.mainInfo, {
+        CustomerID: undefined
+    });
     $scope.mode = 'info';
 
-    $scope.update = function() {
+    $scope.update = function () {
 
         $scope.isLoading = true;
-        $http.put('/customer?CustomerID=' + $scope.mainInfo.CustomerID, $scope.info).then(function(response){
+        $http.put('/customer?CustomerID=' + $scope.mainInfo.CustomerID, $scope.info).then(function (response) {
 
             $scope.isLoading = false;
             var res = response.data;
@@ -109,7 +142,7 @@ app.controller('customerDetailsCtrl', function ($scope, info, $state, $http, $ro
             }
 
 
-        }, function(err){
+        }, function (err) {
 
             console.log(err);
             $scope.isLoading = false;
@@ -127,7 +160,9 @@ app.controller('customerDetailsCtrl', function ($scope, info, $state, $http, $ro
         select: function (id) {
 
             console.log(id);
-            $state.transitionTo('employee.details', { EmplID: id });
+            $state.transitionTo('employee.details', {
+                EmplID: id
+            });
 
         },
 
@@ -219,7 +254,9 @@ app.controller('customerDetailsCtrl', function ($scope, info, $state, $http, $ro
         select: function (id) {
 
             console.log('consultancy ' + id);
-            $state.transitionTo('consultancy.details', { ConsID: id });
+            $state.transitionTo('consultancy.details', {
+                ConsID: id
+            });
 
         },
 

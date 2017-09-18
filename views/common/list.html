@@ -1,4 +1,24 @@
 <div class="title title-icon-list">
     {{title}}
 </div>
-<jtable jtable-id="list" title="Danh sách" fields="fields" list-action-url="listActionUrl" create-action-url="createActionUrl" update-action-url="updateActionUrl" delete-action-url="deleteActionUrl" form-created-callback="formCreatedCallback(event,data)" instant-load="true" record-click="select(id)"></jtable>
+<form ng-if="filterType == 1" class="form-inline text-right" ng-submit="search()" style="margin-bottom: 20px">
+    <div class="form-group" style="margin-right: 10px">
+        <select class="form-control" ng-model="selectedCat">
+                    <option ng-repeat="x in searchCat" value="{{x.value}}">{{x.name}}</option>
+                </select>
+    </div>
+    <div class="input-group">
+        <input type="text" ng-model="searchText" class="form-control custom-input" placeholder="Tìm kiếm theo chỉ mục" style="width: 600px">
+        <div class="input-group-btn">
+            <button class="btn btn-default" type="submit" style="border: none; background: transparent">
+                <i class="glyphicon glyphicon-search"></i>
+              </button>
+        </div>
+    </div>
+</form>
+<div ng-if="filterType == 2">
+    <filter-box filter-box-id="filter" filter-func="search(dateRange)"></filter-box>
+</div>
+<jtable jtable-id="list" title="Danh sách" fields="fields" list-action-url="listActionUrl" create-action-url="createActionUrl"
+    update-action-url="updateActionUrl" delete-action-url="deleteActionUrl" form-created-callback="formCreatedCallback(event,data)"
+    instant-load="true" record-click="select(id)"></jtable>

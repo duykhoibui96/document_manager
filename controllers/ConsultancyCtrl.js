@@ -1,5 +1,6 @@
 var Consultancy = require('../models/Consultancy');
 var common = require('../models/common');
+var fs = require('fs');
 
 
 
@@ -38,7 +39,14 @@ module.exports = {
                 ConsultedEmplID: req.query.ConsultedEmplID
 
             }
+        else if (req.query.start)
+            searchObj = {
 
+                Time: {"$gte": new Date(Number(req.query.start)), "$lt": new Date(Number(req.query.end))}
+
+            }
+
+        console.log(searchObj);
 
         Consultancy.find(searchObj).exec(function (err, docs) {
 
@@ -65,6 +73,7 @@ module.exports = {
 
         }
         else {
+            req.body.Time = new Date(req.body.Time.replace( /(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3") );
             var newConsultancy = new Consultancy(req.body);
 
             newConsultancy.save(function (err, doc) {
@@ -94,8 +103,12 @@ module.exports = {
 
             }
 
+        console.log(req.body);
+
         Consultancy.findOneAndUpdate(idObj, updateObj, { new: true }, function (err, doc) {
 
+            if (req.body.path)
+                fs.unlink(req.body.path);
             common.forDetails(err, doc, res);
 
         })

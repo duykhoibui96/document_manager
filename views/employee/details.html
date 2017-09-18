@@ -1,7 +1,7 @@
 <link rel="stylesheet" type="text/css" href="assets/stylesheets/info.css">
 <div class="row">
     <div class="col-sm-3">
-        <div class="user-info-container" ng-class="{ 'main-theme': isCurrentEmployee(), 'green-theme': !isCurrentEmployee()}">
+        <div class="user-info-container main-theme">
             <div class="avatar text-center">
                 <img src="/assets/images/user.png" alt="" class="img-circle img-responsive">
                 <span class="title">{{mainInfo.Name}}</span>
@@ -18,7 +18,7 @@
                 <div class="text-center menu">
                     <hr>
                     <button type="button" ng-click="mode = 'info'">thông tin chức vụ</button>
-                    <button type="button" ng-click="mode = 'password'" ng-if="isCurrentEmployee()">đổi mật khẩu</button>
+                    <button type="button" ng-show="isCurrentEmployee()" ng-click="mode = 'password'">đổi mật khẩu</button>
                     <button type="button" ng-click="mode = 'customer'">quản lý khách hàng</button>
                     <button type="button" ng-click="mode = 'consulting'">tư vấn</button>
                     <button type="button" ng-click="mode = 'consulted'">được tư vấn</button>
@@ -26,110 +26,115 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-9" style="padding-left: 50px; padding-right: 50px" ng-switch="mode">
-        <div ng-switch-when="info">
-            <form name="infoForm" ng-submit="updateInformation()">
-                <div class="title title-icon-form" style="margin-bottom: 50px">
-                    thông tin chức vụ
-                </div>
-                <div class="md-dialog-content">
-                    <div class="form-group">
-                        <label>Tên</label>
-                        <input type="text" name="Name" class="form-control custom-input" ng-model="info.Name" value="{{mainInfo.Name}}" ng-disable="isLoading"
-                            required>
-                    </div>
-                    <div class="form-group">
-                        <label>Phòng ban</label>
-                        <input type="text" name="childDepartment" class="form-control custom-input" ng-model="info.ChildDepartment" value="{{mainInfo.ChildDepartment}}"
-                            ng-disable="isLoading" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Chức vụ</label>
-                        <input type="text" name="officerCode" class="form-control custom-input" ng-model="info.OfficerCode" value="{{mainInfo.OfficerCode}}"
-                            ng-disable="isLoading" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Công việc</label>
-                        <input type="text" name="jobTitle" class="form-control custom-input" ng-model="info.JobTitle" value="{{mainInfo.JobTitle}}"
-                            ng-disable="isLoading" required>
-                    </div>
-                </div>
-                <div class="text-right" ng-style="{ 'opacity': isLoading ? '0.5' : '1' }">
-                    <button type="submit" class="button has-icon submit" ng-class="{ 'primary': isCurrentEmployee(), 'success': !isCurrentEmployee()}">
-                                <div ng-show="isLoading">
-                                    Đang lưu ...
-                                </div>
-                                <div ng-hide="isLoading">
-                                    Lưu
-                                </div>
-                            </button>
-                    <button type="reset" class="button has-icon refresh">Trở lại mặc định</button>
-                </div>
-            </form>
+    <div class="col-sm-9" style="padding-left: 50px; padding-right: 50px">
+        <div ng-if="!isCurrentEmployee()" class="text-right">
+            <a ui-sref="employee.list">Xem danh sách nhân viên</a>
         </div>
-        <div ng-switch-when="password">
-            <form name="changePasswordForm" ng-submit="changePasswordForm.$valid && updatePassword()">
-                <div class="title title-icon-form" style="margin-bottom: 50px">
-                    đổi mật khẩu
-                </div>
-                <div class="md-dialog-content">
-                    <div class="form-group">
-                        <label>Mật khẩu mới</label>
-                        <input type="password" name="password" class="form-control custom-input" ng-model="password" ng-disable="isLoading" required>
+        <div ng-switch="mode">
+            <div ng-switch-when="info">
+                <form name="infoForm" ng-submit="updateInformation()">
+                    <div class="title title-icon-form" style="margin-bottom: 50px">
+                        thông tin chức vụ
                     </div>
-                    <div class="form-group">
-                        <label>Xác nhận mật khẩu</label>
-                        <input type="password" name="confirmedPassword" class="form-control custom-input" ng-model="confirmedPassword" compare-to="password"
-                            ng-disable="isLoading" required>
-                        <div ng-messages="changePasswordForm.confirmedPassword.$error" role="alert">
-                            <div ng-message="compareTo">Mật khẩu xác nhận phải đúng!</div>
+                    <div class="md-dialog-content">
+                        <div class="form-group">
+                            <label>Tên</label>
+                            <input type="text" name="Name" class="form-control custom-input" ng-model="info.Name" value="{{mainInfo.Name}}" ng-disable="isLoading"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phòng ban</label>
+                            <input type="text" name="childDepartment" class="form-control custom-input" ng-model="info.ChildDepartment" value="{{mainInfo.ChildDepartment}}"
+                                ng-disable="isLoading" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Chức vụ</label>
+                            <input type="text" name="officerCode" class="form-control custom-input" ng-model="info.OfficerCode" value="{{mainInfo.OfficerCode}}"
+                                ng-disable="isLoading" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Công việc</label>
+                            <input type="text" name="jobTitle" class="form-control custom-input" ng-model="info.JobTitle" value="{{mainInfo.JobTitle}}"
+                                ng-disable="isLoading" required>
                         </div>
                     </div>
+                    <div class="text-right" ng-style="{ 'opacity': isLoading ? '0.5' : '1' }">
+                        <button type="submit" class="button has-icon primary submit">
+                                            <div ng-show="isLoading">
+                                                Đang lưu ...
+                                            </div>
+                                            <div ng-hide="isLoading">
+                                                Lưu
+                                            </div>
+                                        </button>
+                        <button type="reset" class="button has-icon refresh">Trở lại mặc định</button>
+                    </div>
+                </form>
+            </div>
+            <div ng-switch-when="password">
+                <form name="changePasswordForm" ng-submit="changePasswordForm.$valid && updatePassword()">
+                    <div class="title title-icon-form" style="margin-bottom: 50px">
+                        đổi mật khẩu
+                    </div>
+                    <div class="md-dialog-content">
+                        <div class="form-group">
+                            <label>Mật khẩu mới</label>
+                            <input type="password" name="password" class="form-control custom-input" ng-model="password" ng-disable="isLoading" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Xác nhận mật khẩu</label>
+                            <input type="password" name="confirmedPassword" class="form-control custom-input" ng-model="confirmedPassword" compare-to="password"
+                                ng-disable="isLoading" required>
+                            <div ng-messages="changePasswordForm.confirmedPassword.$error" role="alert">
+                                <div ng-message="compareTo">Mật khẩu xác nhận phải đúng!</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right" ng-style="{ 'opacity': isLoading ? '0.5' : '1' }">
+                        <button type="submit" class="button has-icon primary submit">
+                                            <div ng-show="isLoading">
+                                                Đang lưu...
+                                            </div>
+                                            <div ng-hide="isLoading">
+                                                Lưu
+                                            </div>
+                                        </button>
+                        <button type="reset" class="button has-icon refresh">Xóa</button>
+                    </div>
+                </form>
+            </div>
+            <div ng-switch-when="customer">
+                <div class="title title-icon-history">
+                    danh sách khách hàng đang quản lý
                 </div>
-                <div class="text-right" ng-style="{ 'opacity': isLoading ? '0.5' : '1' }">
-                    <button type="submit" class="button has-icon submit" ng-class="{ 'primary': isCurrentEmployee(), 'success': !isCurrentEmployee()}">
-                                <div ng-show="isLoading">
-                                    Đang lưu...
-                                </div>
-                                <div ng-hide="isLoading">
-                                    Lưu
-                                </div>
-                            </button>
-                    <button type="reset" class="button has-icon refresh">Xóa</button>
+                <div class="table-responsive">
+                    <jtable jtable-id="customer-table" title="Danh sách" fields="customerList.fields" list-action-url="customerList.listActionUrl"
+                        create-action-url="customerList.createActionUrl" update-action-url="customerList.updateActionUrl" delete-action-url="customerList.deleteActionUrl"
+                        form-created-callback="customerList.formCreatedCallback(event,data)" record-click="customerList.select(id)"
+                        instant-load="true"></jtable>
                 </div>
-            </form>
-        </div>
-        <div ng-switch-when="customer">
-            <div class="title title-icon-history">
-                danh sách khách hàng đang quản lý
             </div>
-            <div class="table-responsive">
-                <jtable jtable-id="customer-table" title="Danh sách" fields="customerList.fields" list-action-url="customerList.listActionUrl"
-                    create-action-url="customerList.createActionUrl" update-action-url="customerList.updateActionUrl" delete-action-url="customerList.deleteActionUrl"
-                    form-created-callback="customerList.formCreatedCallback(event,data)" record-click="customerList.select(id)"
-                    instant-load="true"></jtable>
+            <div ng-switch-when="consulting">
+                <div class="title title-icon-history">
+                    danh sách tư vấn
+                </div>
+                <div class="table-responsive">
+                    <jtable jtable-id="consulting-table" title="Danh sách" fields="consultingList.fields" list-action-url="consultingList.listActionUrl"
+                        create-action-url="consultingList.createActionUrl" update-action-url="consultingList.updateActionUrl"
+                        delete-action-url="consultingList.deleteActionUrl" form-created-callback="consultingList.formCreatedCallback(event,data)"
+                        record-click="consultingList.select(id)" instant-load="true"></jtable>
+                </div>
             </div>
-        </div>
-        <div ng-switch-when="consulting">
-            <div class="title title-icon-history">
-                danh sách tư vấn
-            </div>
-            <div class="table-responsive">
-                <jtable jtable-id="consulting-table" title="Danh sách" fields="consultingList.fields" list-action-url="consultingList.listActionUrl"
-                    create-action-url="consultingList.createActionUrl" update-action-url="consultingList.updateActionUrl" delete-action-url="consultingList.deleteActionUrl"
-                    form-created-callback="consultingList.formCreatedCallback(event,data)" record-click="consultingList.select(id)"
-                    instant-load="true"></jtable>
-            </div>
-        </div>
-        <div ng-switch-when="consulted">
-            <div class="title title-icon-history">
-                danh sách được tư vấn
-            </div>
-            <div class="table-responsive">
-                <jtable jtable-id="consulted-table" title="Danh sách" fields="consultedList.fields" list-action-url="consultedList.listActionUrl"
-                    create-action-url="consultedList.createActionUrl" update-action-url="consultedList.updateActionUrl" delete-action-url="consultedList.deleteActionUrl"
-                    form-created-callback="consultedList.formCreatedCallback(event,data)" record-click="consultedList.select(id)"
-                    instant-load="true"></jtable>
+            <div ng-switch-when="consulted">
+                <div class="title title-icon-history">
+                    danh sách được tư vấn
+                </div>
+                <div class="table-responsive">
+                    <jtable jtable-id="consulted-table" title="Danh sách" fields="consultedList.fields" list-action-url="consultedList.listActionUrl"
+                        create-action-url="consultedList.createActionUrl" update-action-url="consultedList.updateActionUrl" delete-action-url="consultedList.deleteActionUrl"
+                        form-created-callback="consultedList.formCreatedCallback(event,data)" record-click="consultedList.select(id)"
+                        instant-load="true"></jtable>
+                </div>
             </div>
         </div>
     </div>

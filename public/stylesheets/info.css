@@ -2,18 +2,11 @@
     margin-bottom: 50px
 }
 
-.green-theme {
+.second-theme {
 
-    background:#04B404;
-    color: white;
+    background:#eee;
 }
 
-.orange-theme {
-
-    background: #FE9A2E;
-    color: white;
-
-}
 
 .avatar {
     padding: 50px;
@@ -23,13 +16,10 @@
     background: linear-gradient(to bottom, #2d89b4, #297ca3);
 }
 
-.user-info-container.green-theme .avatar {
-    background: #088A08;
+.user-info-container.second-theme .avatar {
+    background: #A4A4A4;
 }
 
-.user-info-container.orange-theme .avatar {
-    background: #DF7401;
-}
 
 .avatar img {
     margin-bottom: 30px;

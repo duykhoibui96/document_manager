@@ -1,8 +1,8 @@
+<div class="text-right">
+    <a ui-sref="consultancy.list">Xem danh sách tư vấn</a>
+</div>
 <div class="title title-icon-details">
     thông tin tư vấn
-    <div class="pull-right" style="padding: 5px 13px; position: relative; top: -5px; border-radius: 50%; background: linear-gradient(to bottom, gray, #2c3e50)">
-        <a ui-sref="consultancy.list"><span class="fa fa-arrow-left" style="color: white"></span></a>
-    </div>
 </div>
 <div class="container-fluid">
     <div class="row">
@@ -43,7 +43,9 @@
             <div class="title" style="font-size: 1.5em; color: blue">
                 tài liệu hiện có
             </div>
-            <static-jtable jtable-id="document-table" title="Danh sách" fields="fields" list-action="listAction(postData,params)" delete-action="deleteAction(postData)" is-deletable="true" instant-load="true"></static-jtable>
+            <filter-box filter-box-id="filter" filter-func="search(dateRange)"></filter-box>
+            <static-jtable jtable-id="document-table" title="Danh sách" fields="fields" list-action="listAction(postData,params)" delete-action="deleteAction(postData)"
+                is-deletable="true" instant-load="true"></static-jtable>
         </div>
     </div>
 </div>
