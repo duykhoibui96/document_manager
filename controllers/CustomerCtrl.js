@@ -1,5 +1,6 @@
 var Customer = require('../models/Customer');
 var Employee = require('../models/Employee');
+var Consultancy = require('../models/Consultancy');
 var common = require('../models/common');
 
 module.exports = {
@@ -97,13 +98,16 @@ module.exports = {
                     }
 
             }
+
+
+
             Customer.find(searchObj).exec(function (err, docs) {
 
                 common.forList(err, docs, req, res);
 
             })
-
         }
+
 
 
     },

@@ -15,7 +15,7 @@ var ConsultancySchema = new Schema({
     ConsultedEmplID: Number,
     Content: String,
     Document: [],
-    Time: { type: Date, default: Date.now }
+    Time: String
 
 
 }, { collection: 'consultancy' });

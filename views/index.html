@@ -40,6 +40,9 @@
     <script src="/assets/javascripts/employeeCtrl.js"></script>
     <script src="/assets/javascripts/customerCtrl.js"></script>
     <script src="/assets/javascripts/consultancyCtrl.js"></script>
+    <script src="/assets/javascripts/studyCtrl.js"></script>
+    <script src="/assets/javascripts/seminarCtrl.js"></script>
+    <script src="/assets/javascripts/component.js"></script>
 </head>
 
 <body ng-app="app" ng-cloak>
@@ -73,8 +76,9 @@
                             <li class="main-select" ng-class="{ active: option == 'info'}"><a ui-sref="info">Thông tin cá nhân</a></li>
                             <li class="main-select" ng-class="{ active: option == 'customer'}"><a ui-sref="customer">Khách hàng</a></li>
                             <li class="main-select" ng-class="{ active: option == 'consultancy'}"><a ui-sref="consultancy.list({ mode: 'consulting' })">Tư vấn</a></li>
-                            <li class="main-select" ng-class="{ active: option == 'employee'}"><a ui-sref="employee">Quản lý nhân viên</a></li>
-                            <!-- <li class="main-select" ng-class="{ active: option == 'study'}"><a ui-sref="study">Nghiên cứu</a></li> -->
+                            <li class="main-select" ng-class="{ active: option == 'employee'}"><a ui-sref="employee">Nhân viên</a></li>
+                            <li class="main-select" ng-class="{ active: option == 'study'}"><a ui-sref="study">Nghiên cứu</a></li>
+                            <li class="main-select" ng-class="{ active: option == 'seminar'}"><a ui-sref="seminar">Hội thảo</a></li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
                             <li class="main-select"><a ui-sref="info"><span class="glyphicon glyphicon-user"></span> Thông tin cá nhân</a></li>
@@ -102,7 +106,7 @@
             </div>
         </div>
         <!-- <div class="col-xs-12" ng-class="sidebarOptions.length > 0 ? 'col-sm-10' : 'col-sm-12'"> -->
-        <div ui-view class="container-fluid animation-zoom content" id="content" router-section></div>
+        <div ui-view class="container-fluid animation-zoom content col-sm-10 col-sm-offset-1 col-xs-12" id="content"></div>
         <!-- </div> -->
     </div>
     <footer>

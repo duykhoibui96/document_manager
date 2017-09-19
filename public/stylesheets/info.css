@@ -2,9 +2,10 @@
     margin-bottom: 50px
 }
 
-.second-theme {
+.user-info-container.theme-1 {
 
-    background:#eee;
+    background:#A4A4A4;
+    color: white;
 }
 
 
@@ -16,8 +17,8 @@
     background: linear-gradient(to bottom, #2d89b4, #297ca3);
 }
 
-.user-info-container.second-theme .avatar {
-    background: #A4A4A4;
+.user-info-container.theme-1 .avatar {
+    background: #848484;
 }
 
 
@@ -35,7 +36,7 @@
 }
 
 .user-content .list-group-item {
-    padding-left: 50px;
+    padding-left: 10px;
 }
 
 .user-content i {

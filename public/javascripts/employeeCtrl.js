@@ -22,12 +22,12 @@ app.controller('employeeListCtrl', function ($scope, $state, $rootScope) {
         }
 
     ]
-    $scope.search = function() {
+    $scope.search = function () {
 
         $rootScope.$emit('filtering', {
 
-            searchText: $scope.searchText,
-            selectedCat: $scope.selectedCat
+            searchText: this.searchText,
+            selectedCat: this.selectedCat
 
         })
 
@@ -37,7 +37,8 @@ app.controller('employeeListCtrl', function ($scope, $state, $rootScope) {
 
         console.log('Form created');
         data.form.find('input[name=EmplID]').attr('readonly', true);
-        data.form.find('input[name=EmplID]').val(Date.now());
+        if (data.formType === 'create')
+            data.form.find('input[name=EmplID]').val(Date.now());
 
     }
 
@@ -110,7 +111,7 @@ app.controller('employeeListCtrl', function ($scope, $state, $rootScope) {
 
 })
 
-app.controller('employeeDetailsCtrl', function ($scope, info, $state, representativeName) {
+app.controller('employeeDetailsCtrl', function ($scope, info, $state, $http, $rootScope) {
 
     $scope.mainInfo = info.Record;
     $scope.isLoading = false;
@@ -118,7 +119,8 @@ app.controller('employeeDetailsCtrl', function ($scope, info, $state, representa
     $scope.mode = 'info';
     $scope.info = Object.assign({}, $scope.mainInfo, {
         EmplID: undefined,
-        Mail: undefined
+        Mail: undefined,
+        _id: undefined
     });
     $scope.isCurrentEmployee = function () {
 
@@ -130,7 +132,7 @@ app.controller('employeeDetailsCtrl', function ($scope, info, $state, representa
 
         $scope.isLoading = true;
         var url = $state.current.name === 'info' ? '/employee' : '/employee?EmplID=' + $scope.mainInfo.EmplID;
-        $http.put(url).then(function (response) {
+        $http.put(url,$scope.info).then(function (response) {
 
             $scope.isLoading = false;
             var res = response.data;
@@ -445,6 +447,20 @@ app.controller('employeeDetailsCtrl', function ($scope, info, $state, representa
 
 
         }
+
+    }
+
+    $scope.studyListParams = {
+
+        EmplID: $scope.mainInfo.EmplID,
+        Type: 'StudyEmpl'
+
+    }
+
+    $scope.instructListParams = {
+
+        EmplID: $scope.mainInfo.EmplID,
+        Type: 'Instructor'
 
     }
 

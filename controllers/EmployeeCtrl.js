@@ -1,5 +1,6 @@
 var Employee = require('../models/Employee');
 var common = require('../models/common');
+var Study = require('../models/Study');
 
 module.exports = {
 
@@ -30,51 +31,131 @@ module.exports = {
 
     list: function (req, res) {
 
-        var searchObj = {};
+        if (req.query.StudyID) {
 
-        if (req.query.text) {
-            if (req.query.cat === 'EmplID')
-                searchObj = {
+            Study.findOne({
+                StudyID: req.query.StudyID
+            }, function (err, doc) {
 
-                    EmplID: Number(req.query.text)
+                if (err) {
+                    console.log(err);
+                    res.json({
+                        Result: 'ERROR',
+                        Message: 'Database error'
+                    });
+                } else if (doc == null) {
+                    res.json({
+                        Result: 'ERROR',
+                        Message: 'Record was deleted'
+                    });
+                } else {
+                    Employee.find({
+                        EmplID: {
+                            $in: req.query.Type === 'Study' ? doc.StudyEmpl : doc.Instructor
+                        }
+                    }, function (err, docs) {
 
+                        common.forList(err, docs, req, res);
+
+                    })
                 }
-            else
-                searchObj = {
 
-                    Name: {
-                        "$regex": req.query.text,
-                        "$options": "i"
+            })
+
+        } else {
+            var searchObj = {};
+
+            if (req.query.text) {
+                if (req.query.cat === 'EmplID')
+                    searchObj = {
+
+                        EmplID: Number(req.query.text)
+
+                    }
+                else
+                    searchObj = {
+
+                        Name: {
+                            "$regex": req.query.text,
+                            "$options": "i"
+                        }
+
                     }
 
-                }
+            }
 
+            console.log(searchObj);
+
+            Employee.find(searchObj).exec(function (err, docs) {
+
+                common.forList(err, docs, req, res);
+
+            })
         }
-
-        console.log(searchObj);
-
-        Employee.find(searchObj).exec(function (err, docs) {
-
-            common.forList(err, docs, req, res);
-
-        })
 
     },
 
     create: function (req, res) {
 
-        var newEmployee = new Employee(req.body);
+        if (req.query.StudyID) {
 
-        newEmployee.save(function (err, doc) {
+            var employeeObj = req.query.Type === 'Study' ? {
 
-            common.forDetails(err, doc, res);
+                StudyEmpl: req.body.EmplID
 
-        })
+            } : {
+
+                Instructor: req.body.EmplID
+
+            };
+
+            Study.findOneAndUpdate({
+                StudyID: req.query.StudyID
+            }, {
+                $push: employeeObj
+            }, {
+                new: true
+            }, function (err, doc) {
+
+                if (err) {
+                    console.log(err);
+                    res.json({
+                        Result: 'ERROR',
+                        Message: 'Database error'
+                    });
+                } else if (doc == null) {
+                    res.json({
+                        Result: 'ERROR',
+                        Message: 'Record was deleted'
+                    });
+                } else {
+                    Employee.findOne({
+                        EmplID: req.body.EmplID
+                    }, function (err, doc) {
+
+                        common.forDetails(err, doc, res);
+
+                    })
+                }
+
+
+            })
+
+        } else {
+            var newEmployee = new Employee(req.body);
+
+            newEmployee.save(function (err, doc) {
+
+                common.forDetails(err, doc, res);
+
+            })
+        }
 
 
     },
 
     update: function (req, res) {
+
 
         var idObj = req.query ? req.query : {
 
@@ -82,7 +163,9 @@ module.exports = {
 
         };
 
-        Employee.findOneAndUpdate(idObj, req.body, {
+        console.log(req.body);
+
+        Employee.findOneAndUpdate(idObj,req.body, {
             new: true
         }, function (err, doc) {
 
@@ -94,11 +177,46 @@ module.exports = {
 
     delete: function (req, res) {
 
-        Employee.remove(req.body, function (err, doc) {
+        if (req.query.StudyID) {
 
-            common.forDelete(err, doc, res);
+            var employeeObj = req.query.Type === 'Study' ? {
 
-        })
+                StudyEmpl: req.body.EmplID
+
+            } : {
+
+                Instructor: req.body.EmplID
+
+            };
+
+            Study.findOneAndUpdate({
+                StudyID: req.query.StudyID
+            }, {
+                $pop: employeeObj
+            }, function (err, doc) {
+
+                if (err) {
+                    console.log(err);
+                    res.json({
+                        Result: 'ERROR',
+                        Message: 'Database error'
+                    });
+                } else
+                    res.json({
+
+                        Result: 'OK'
+
+                    })
+
+
+            })
+
+        } else
+            Employee.remove(req.body, function (err, doc) {
+
+                common.forDelete(err, doc, res);
+
+            })
 
     }
 

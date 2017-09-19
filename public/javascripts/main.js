@@ -141,10 +141,9 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
 
                 },
 
-                representativeName: function ($http, info) {
+                employeeList: function ($http) {
 
-                    var id = info.Record.Representative;
-                    return $http.get('/employee/details/' + id).then(function (response) {
+                    return $http.post('/employee/options?selected=EmplID%20Name').then(function (response) {
 
                         return response.data;
 
@@ -194,11 +193,9 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
 
                 },
 
-                customer: function ($http, info) {
+                customerList: function ($http) {
 
-                    var id = info.Record.CustomerID;
-
-                    return $http.get('/customer/details/' + id).then(function (response) {
+                    return $http.post('/customer/options?selected=CustomerID%20Name').then(function (response) {
 
                         return response.data;
 
@@ -207,24 +204,9 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
 
                 },
 
-                consultingEmpl: function ($http, info) {
+                employeeList: function ($http) {
 
-                    var id = info.Record.ConsultingEmplID;
-
-                    return $http.get('/employee/details/' + id).then(function (response) {
-
-                        return response.data;
-
-                    })
-
-
-                },
-
-                consultedEmpl: function ($http, info) {
-
-                    var id = info.Record.ConsultedEmplID;
-
-                    return $http.get('/employee/details/' + id).then(function (response) {
+                    return $http.post('/employee/options?selected=EmplID%20Name').then(function (response) {
 
                         return response.data;
 
@@ -234,6 +216,77 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
                 }
 
             }
+
+
+        })
+        .state('study', {
+
+            url: '/study',
+            onEnter: function ($rootScope) {
+
+                $rootScope.option = 'study';
+
+            },
+            defaultSubstate: 'study.list'
+
+
+        })
+        .state('study.list', {
+
+            url: '/list',
+            controller: 'studyListCtrl',
+            templateUrl: 'common/list.html'
+
+
+        })
+        .state('study.details', {
+
+            url: '/details/:StudyID',
+            controller: 'studyDetailsCtrl',
+            templateUrl: 'study/details.html',
+            resolve: {
+
+                info: function ($http, $stateParams) {
+
+                    return $http.get('/study/details/' + $stateParams.StudyID).then(function (response) {
+
+                        return response.data;
+
+                    })
+
+                },
+
+                seminarList: function ($http) {
+
+                    return $http.post('/seminar/options?selected=SeminarID%20Name').then(function (response) {
+
+                        return response.data;
+
+                    })
+
+                }
+
+            }
+
+
+        })
+        .state('seminar', {
+
+            url: '/seminar',
+            onEnter: function ($rootScope) {
+
+                $rootScope.option = 'seminar';
+
+            },
+            defaultSubstate: 'seminar.list'
+
+
+        })
+        .state('seminar.list', {
+
+            url: '/list',
+            controller: 'seminarListCtrl',
+            templateUrl: 'common/list.html'
 
 
         })
@@ -607,12 +660,14 @@ app.directive('jtable', function ($localStorage, $http, $rootScope) {
 
                             // var data = $.extend({}, postData, scope.attachedListData);
                             console.log(postData);
-                            if (postData)
+                            if (postData) {
+
                                 if (postData.searchText) {
                                     url += `&text=${postData.searchText}&cat=${postData.selectedCat}`
+                                } else if (postData.startDate) {
+                                    url += `&start=${postData.startDate}&end=${postData.endDate}`;
                                 }
-                            else {
-                                url += `&start=${postData.startDate}&end=${postData.endDate}`;
+
                             }
                             return $.Deferred(function ($dfd) {
 
@@ -723,6 +778,7 @@ app.directive('jtable', function ($localStorage, $http, $rootScope) {
                     // }
                     formCreated: function (event, data) {
 
+                        data.form.find('input, select').addClass('form-control');
                         scope.formCreatedCallback({
 
                             event: event,
@@ -835,6 +891,7 @@ app.directive('staticJtable', function ($localStorage, $http, $rootScope) {
                 $(selector).jtable({
                     title: scope.title,
                     paging: true, //Enable paging
+                    pageSize: 5,
                     sorting: true,
                     recordsLoaded: function (event, data) {
                         $(selector + ' .jtable-data-row').click(function () {
@@ -942,6 +999,19 @@ app.directive('scrollToItem', function () {
                 $('html,body').animate({
                     scrollTop: $(scope.scrollTo).offset().top
                 }, "slow");
+            });
+        }
+    }
+})
+
+app.directive('datePicker', function () {
+    return {
+        restrict: 'A',
+        scope: true,
+        link: function (scope, $elm, attr) {
+
+            $elm.datepicker({
+                dateFormat: 'dd-mm-yy'
             });
         }
     }

@@ -88,14 +88,20 @@ module.exports = {
 
             })
         }
-        else
+        else{
+
+            var startIndex = Number(req.query.jtStartIndex);
+            var pageSize = Number(req.query.jtPageSize);
+
             res.json({
 
                 Result: 'OK',
                 TotalRecordCount: docs.length,
-                Records: docs.slice(req.query.jtStartIndex,req.query.jtStartIndex + req.query.jtPageSize)
+                Records: docs.slice(startIndex,startIndex + pageSize)
 
             });
+
+        }
 
     },
 

@@ -11,6 +11,8 @@ var account = require('./routes/account');
 var employee = require('./routes/employee');
 var customer = require('./routes/customer');
 var consultancy = require('./routes/consultancy');
+var study = require('./routes/study');
+var seminar = require('./routes/seminar');
 
 
 mongoose.connect(`mongodb://localhost/document_manager`);
@@ -35,6 +37,8 @@ app.use('/account', account);
 app.use('/employee', employee);
 app.use('/customer',customer);
 app.use('/consultancy',consultancy);
+app.use('/study',study);
+app.use('/seminar',seminar);
 
 
 

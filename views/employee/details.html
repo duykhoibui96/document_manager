@@ -22,6 +22,8 @@
                     <button type="button" ng-click="mode = 'customer'">quản lý khách hàng</button>
                     <button type="button" ng-click="mode = 'consulting'">tư vấn</button>
                     <button type="button" ng-click="mode = 'consulted'">được tư vấn</button>
+                    <button type="button" ng-click="mode = 'study'">nghiên cứu</button>
+                    <button type="button" ng-click="mode = 'instruct'">hướng dẫn</button>
                 </div>
             </div>
         </div>
@@ -32,10 +34,10 @@
         </div>
         <div ng-switch="mode">
             <div ng-switch-when="info">
-                <form name="infoForm" ng-submit="updateInformation()">
-                    <div class="title title-icon-form" style="margin-bottom: 50px">
-                        thông tin chức vụ
-                    </div>
+                <div class="title title-icon-form" style="margin-bottom: 50px">
+                    thông tin chức vụ
+                </div>
+                <form name="infoForm" ng-submit="updateInformation()" class="form-horizontal custom-form">
                     <div class="md-dialog-content">
                         <div class="form-group">
                             <label>Tên</label>
@@ -72,10 +74,11 @@
                 </form>
             </div>
             <div ng-switch-when="password">
-                <form name="changePasswordForm" ng-submit="changePasswordForm.$valid && updatePassword()">
-                    <div class="title title-icon-form" style="margin-bottom: 50px">
-                        đổi mật khẩu
-                    </div>
+                <div class="title title-icon-form" style="margin-bottom: 50px">
+                    đổi mật khẩu
+                </div>
+                <form name="changePasswordForm" ng-submit="changePasswordForm.$valid && updatePassword()" class="form-horizontal custom-form">
+
                     <div class="md-dialog-content">
                         <div class="form-group">
                             <label>Mật khẩu mới</label>
@@ -134,6 +137,22 @@
                         create-action-url="consultedList.createActionUrl" update-action-url="consultedList.updateActionUrl" delete-action-url="consultedList.deleteActionUrl"
                         form-created-callback="consultedList.formCreatedCallback(event,data)" record-click="consultedList.select(id)"
                         instant-load="true"></jtable>
+                </div>
+            </div>
+            <div ng-switch-when="study">
+                <div class="title title-icon-history">
+                    danh sách nghiên cứu
+                </div>
+                <div class="table-responsive">
+                    <study-list list-data="studyListParams"></study-list>
+                </div>
+            </div>
+            <div ng-switch-when="instruct">
+                <div class="title title-icon-history">
+                    danh sách hướng dẫn
+                </div>
+                <div class="table-responsive">
+                    <study-list list-data="instructListParams"></study-list>
                 </div>
             </div>
         </div>

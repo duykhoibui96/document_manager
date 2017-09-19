@@ -1,15 +1,13 @@
-var Consultancy = require('../models/Consultancy');
+var Study = require('../models/Study');
 var common = require('../models/common');
 var fs = require('fs');
-
-
 
 module.exports = {
 
     get: function (req, res) {
 
-        Consultancy.findOne({
-            ConsID: req.params.id
+        Study.findOne({
+            StudyID: req.params.id
         }, function (err, doc) {
 
             common.forDetails(err, doc, res);
@@ -18,45 +16,53 @@ module.exports = {
 
     },
 
+    listForOptions: function (req, res) {
+
+
+        var selectedObj = req.query.selected;
+        Study.find().select(selectedObj).exec(function (err, docs) {
+
+            common.forOptions(err, docs, 'StudyID', 'StudyID Name', res);
+
+
+        });
+
+    },
 
     list: function (req, res) {
 
         var searchObj = {};
 
-        if (req.query.CustomerID)
-            searchObj = {
+        if (req.query.EmplID) {
 
-                CustomerID: req.query.CustomerID
+            if (req.query.Type === 'StudyEmpl')
+                searchObj = {
 
-            }
-        else if (req.query.ConsultingEmplID)
-            searchObj = {
+                    StudyEmpl: {
+                        $in: [req.query.EmplID]
+                    }
 
-                ConsultingEmplID: req.query.ConsultingEmplID
+                }
+            else
+                searchObj = {
 
-            }
-        else if (req.query.ConsultedEmplID)
-            searchObj = {
+                    Instructor: {
+                        $in: [req.query.EmplID]
+                    }
 
-                ConsultedEmplID: req.query.ConsultedEmplID
+                }
+        }
 
-            }
-        console.log(searchObj);
-
-        Consultancy.find(searchObj).exec(function (err, docs) {
+        Study.find(searchObj).exec(function (err, docs) {
 
             if (req.query.start)
             {
                 var startDate = new Date(Number(req.query.start));
                 var endDate = new Date(Number(req.query.end));
-                console.log(req.query);
 
                 docs = docs.filter(function(doc){
 
                     var time = new Date(doc.Time.replace(/(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3"));
-                    console.log(startDate);
-                    console.log(time);
-                    console.log(endDate);
                     return startDate <= time && time <= endDate;
 
                 })
@@ -70,13 +76,14 @@ module.exports = {
     create: function (req, res) {
 
         if (req.files) {
+            console.log('Get here for files');
             var files = req.files;
-            var ConsID = req.query.ConsID;
+            var StudyID = req.query.StudyID;
             for (var i = 0; i < files.length; i++)
                 files[i].time = Date.now();
 
-            Consultancy.findOneAndUpdate({
-                ConsID: ConsID
+            Study.findOneAndUpdate({
+                StudyID: StudyID
             }, {
                 $pushAll: {
                     Document: req.files
@@ -90,24 +97,22 @@ module.exports = {
             })
 
         } else {
-            // req.body.Time = new Date(req.body.Time.replace(/(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3"));
-            var newConsultancy = new Consultancy(req.body);
+           // req.body.Time = new Date(req.body.Time.replace(/(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3"));
+            var newStudy = new Study(req.body);
 
-            newConsultancy.save(function (err, doc) {
+            newStudy.save(function (err, doc) {
 
                 common.forDetails(err, doc, res);
 
             })
         }
-
-
     },
 
     update: function (req, res) {
 
         var idObj = req.query ? req.query : {
 
-            ConsID: req.id
+            StudyID: req.id
 
         };
 
@@ -124,11 +129,9 @@ module.exports = {
         // else if (req.body.Time)
         //     req.body.Time = new Date(req.body.Time.replace(/(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3"));
 
-        console.log('Here it is');
-        console.log(req.body.Time);
-        console.log(req.body);
         console.log(idObj);
-        Consultancy.findOneAndUpdate(idObj, updateObj, {
+        console.log(updateObj);
+        Study.findOneAndUpdate(idObj, updateObj, {
             new: true
         }, function (err, doc) {
 
@@ -147,7 +150,7 @@ module.exports = {
 
     delete: function (req, res) {
 
-        Consultancy.findOne(req.body, function (err, doc) {
+        Study.findOne(req.body, function (err, doc) {
 
             if (err) {
                 console.log(err);
@@ -173,7 +176,7 @@ module.exports = {
 
                     });
 
-                Consultancy.remove(req.body, function (err, doc) {
+                Study.remove(req.body, function (err, doc) {
 
                     common.forDelete(err, doc, res);
 
@@ -184,7 +187,9 @@ module.exports = {
 
         });
 
+
     }
 
 
-}
+
+};

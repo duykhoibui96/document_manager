@@ -27,8 +27,8 @@ app.controller('customerListCtrl', function ($scope, $state, $rootScope) {
 
         $rootScope.$emit('filtering', {
 
-            searchText: $scope.searchText,
-            selectedCat: $scope.selectedCat
+            searchText: this.searchText,
+            selectedCat: this.selectedCat
 
         })
 
@@ -37,8 +37,9 @@ app.controller('customerListCtrl', function ($scope, $state, $rootScope) {
     $scope.formCreatedCallback = function (event, data) {
 
         data.form.find('input[name=CustomerID]').attr('readonly', true);
-        data.form.find('select[name=ResponsibleEmpl]').attr('multiple', 'multiple');
-        data.form.find('input[name=CustomerID]').val(Date.now());
+       // data.form.find('select[name=ResponsibleEmpl]').attr('multiple', 'multiple');
+        if (data.formType === 'create')
+            data.form.find('input[name=CustomerID]').val(Date.now());
 
     }
 
@@ -90,26 +91,26 @@ app.controller('customerListCtrl', function ($scope, $state, $rootScope) {
             width: '30%',
             options: '/employee/options?selected=EmplID%20Name'
 
-        },
-
-        ResponsibleEmpl: {
-
-            title: 'Nhân viên phụ trách',
-            // width: '10%',
-            list: false,
-            // display: function (data) {
-
-            //     var display = '<div>';
-            //     var records = data.record.ResponsibleEmpl;
-            //     for (var i = 0; i < records.length; i++)
-            //         display += `<span>${records[i]}</span>,`;
-            //     display += '</div>';
-            //     return display;
-
-            // },
-            options: '/employee/options?selected=EmplID%20Name'
-
         }
+
+        // ResponsibleEmpl: {
+
+        //     title: 'Nhân viên phụ trách',
+        //     // width: '10%',
+        //     list: false,
+        //     // display: function (data) {
+
+        //     //     var display = '<div>';
+        //     //     var records = data.record.ResponsibleEmpl;
+        //     //     for (var i = 0; i < records.length; i++)
+        //     //         display += `<span>${records[i]}</span>,`;
+        //     //     display += '</div>';
+        //     //     return display;
+
+        //     // },
+        //     options: '/employee/options?selected=EmplID%20Name'
+
+        // }
 
 
     }
@@ -117,15 +118,18 @@ app.controller('customerListCtrl', function ($scope, $state, $rootScope) {
 
 })
 
-app.controller('customerDetailsCtrl', function ($scope, info, $state, $http, $rootScope) {
+app.controller('customerDetailsCtrl', function ($scope, info, $state, $http, $rootScope, employeeList) {
 
     $scope.isLoading = false;
 
+    $scope.emplList = employeeList.Options;
     $scope.mainInfo = info.Record;
     $scope.info = Object.assign({}, $scope.mainInfo, {
         CustomerID: undefined
     });
     $scope.mode = 'info';
+
+    $scope.info.Representative = $scope.info.Representative.toString();
 
     $scope.update = function () {
 
